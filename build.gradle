@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+apply from: 'dependencies.gradle'
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+def dep = rootProject.ext.dependencies
+def testDep = rootProject.ext.testingDependencies
+
+dependencies {
+
+    testImplementation testDep.mockito
+    testImplementation testDep.junit5
+    testImplementation testDep.assertj
+    testRuntimeOnly testDep.junit5_engine
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,3 @@
+lt/andriaus/hangman/domain/Game.java
+ lt.andriaus.hangman.domain.Game
+ lt.andriaus.hangman.domain.Game$Builder

@@ -1,0 +1,30 @@
+ext {
+    versions = [
+            log4j       : '2.13.3',
+            mockito     : '3.7.7',
+            junit       : '5.7.0',
+            assertj     : '3.16.1',
+            spark       : '2.9.1',
+            jackson     : '2.11.0',
+            unirest     : '1.4.9',
+    ]
+    //noinspection GroovyAssignabilityCheck
+    dependencies = [
+            log4j                 : ["org.apache.logging.log4j:log4j-core:$versions.log4j",
+                                     "org.apache.logging.log4j:log4j-slf4j-impl:$versions.log4j"],
+            spark                 : "com.sparkjava:spark-core:$versions.spark",
+            jackson               : "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$versions.jackson",
+            jackson_yaml          : "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$versions.jackson",
+    ]
+    testingDependencies = [
+            mockito          : ["org.mockito:mockito-core:$versions.mockito",
+                                "org.mockito:mockito-junit-jupiter:$versions.mockito"],
+            junit5           : ["org.junit.jupiter:junit-jupiter-api:$versions.junit",
+                                "org.junit.jupiter:junit-jupiter-params:$versions.junit"],
+            junit5_engine    : "org.junit.jupiter:junit-jupiter-engine:$versions.junit",
+            assertj          : "org.assertj:assertj-core:$versions.assertj",
+            unirest          : "com.mashape.unirest:unirest-java:$versions.unirest",
+            json_unit        : ["net.javacrumbs.json-unit:json-unit:$versions.json_unit",
+                                "net.javacrumbs.json-unit:json-unit-fluent:$versions.json_unit"],
+    ]
+}
