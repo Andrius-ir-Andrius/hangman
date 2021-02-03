@@ -1,6 +1,6 @@
 lt/andriaus/hangman/domain/GameTest.java
  lt.andriaus.hangman.domain.GameTest
-lt/andriaus/hangman/useCases/RamDatabaseTest.java
- lt.andriaus.hangman.useCases.RamDatabaseTest
 lt/andriaus/hangman/kata/ArgeTest.java
  lt.andriaus.hangman.kata.ArgeTest
+lt/andriaus/hangman/useCases/RamDatabaseTest.java
+ lt.andriaus.hangman.useCases.RamDatabaseTest
