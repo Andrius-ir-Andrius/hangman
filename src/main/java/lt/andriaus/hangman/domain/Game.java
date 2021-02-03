@@ -1,9 +1,11 @@
 package lt.andriaus.hangman.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 
 public class Game {
     private final String word;
@@ -51,8 +53,8 @@ public class Game {
         }
 
         public Builder withLetters(List<Character> letters) {
-            this.letters = letters;
-            return new Builder(word, letters);
+            this.letters = unmodifiableList(letters);
+            return new Builder(word, this.letters);
         }
 
         public Game build() {

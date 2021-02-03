@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="lt.andriaus.hangman.domain.GameTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2021-02-02T13:57:57" hostname="openg-Z87M-D3H" time="0.282">
-  <properties/>
-  <testcase name="shouldAddLetterOnly()" classname="lt.andriaus.hangman.domain.GameTest" time="0.278"/>
-  <testcase name="shouldCreateGameWithWord()" classname="lt.andriaus.hangman.domain.GameTest" time="0.003"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
