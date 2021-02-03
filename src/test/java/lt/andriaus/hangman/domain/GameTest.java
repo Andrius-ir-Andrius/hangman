@@ -41,4 +41,17 @@ public class GameTest {
         Assertions.assertThrows(UnsupportedOperationException.class, () -> game.getLetters().add('a'));
     }
 
+    @Test
+    void shouldUseUpperCaseOnly() {
+        String word = "aBc";
+        Game game = Game.Builder.fromWord(word).build();
+
+        Game guessedLetter = game.guessLetter('D').guessLetter('c');
+        List<Character> result = guessedLetter.getLetters();
+
+        assertThat(guessedLetter.getWord()).isEqualTo("ABC");
+        assertThat(result).contains('D');
+        assertThat(result).contains('C');
+    }
+
 }

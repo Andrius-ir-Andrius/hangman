@@ -19,10 +19,10 @@ public class Game {
         return word;
     }
 
-    public Game guessLetter(char letter) {
+    public Game guessLetter(Character letter) {
         List<Character> list = new ArrayList<>(letters);
         if (Character.isAlphabetic(letter))
-            list.add(letter);
+            list.add(letter.toString().toUpperCase().toCharArray()[0]);
 
         return Builder.from(this)
                 .withLetters(list)
@@ -39,7 +39,7 @@ public class Game {
         private List<Character> letters;
 
         public Builder(String word, List<Character> letters) {
-            this.word = word;
+            this.word = word.toUpperCase();
             this.letters = letters;
         }
 
