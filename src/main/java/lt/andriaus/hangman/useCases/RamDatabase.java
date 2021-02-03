@@ -2,22 +2,24 @@ package lt.andriaus.hangman.useCases;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.unmodifiableMap;
 
 public class RamDatabase<E> implements Database<E> {
     private Map<Integer, E> gameList;
-    private int id;
+    private AtomicInteger atomicId;
 
     public RamDatabase() {
         this.gameList = new HashMap<>();
-        id = 0;
+        atomicId = new AtomicInteger(0);
     }
 
     @Override
     public int save(E element) {
-        this.gameList.put(this.id++, element);
-        return id - 1;
+        int id = atomicId.getAndIncrement();
+        this.gameList.put(id, element);
+        return id;
     }
 
     @Override
