@@ -3,6 +3,8 @@ package lt.andriaus.hangman.useCases;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Collections.unmodifiableMap;
+
 public class RamDatabase<E> implements Database<E> {
     private Map<Integer, E> gameList;
     private int id;
@@ -27,5 +29,10 @@ public class RamDatabase<E> implements Database<E> {
     @Override
     public E loadOne(int id) {
         return this.gameList.get(id);
+    }
+
+    @Override
+    public Map<Integer, E> loadAll() {
+        return unmodifiableMap(this.gameList);
     }
 }

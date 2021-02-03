@@ -1,9 +1,12 @@
 package lt.andriaus.hangman.useCases;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,6 +39,22 @@ class RamDatabaseTest {
         database.save(data.get(0));
         database.save(data.get(1));
         assertThat(database.loadOne(-1)).isEqualTo(null);
+    }
+
+    @Test
+    void shouldRetrieveAll() {
+        Database<String> database = new RamDatabase<>();
+        data.forEach(database::save);
+        List<String> result = new ArrayList<>(database.loadAll().values());
+        assertThat(result.containsAll(data)).isTrue();
+    }
+
+    @Test
+    void shouldNotModify() {
+        Database<String> database = new RamDatabase<>();
+        data.forEach(database::save);
+        Map<Integer, String> result = database.loadAll();
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> result.put(0, data.get(1)));
     }
 
 }
