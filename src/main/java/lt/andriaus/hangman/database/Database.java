@@ -1,4 +1,4 @@
-package lt.andriaus.hangman.useCases;
+package lt.andriaus.hangman.database;
 
 import java.util.Map;
 

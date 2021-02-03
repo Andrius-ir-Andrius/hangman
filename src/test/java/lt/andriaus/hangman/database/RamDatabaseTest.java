@@ -1,5 +1,7 @@
-package lt.andriaus.hangman.useCases;
+package lt.andriaus.hangman.database;
 
+import lt.andriaus.hangman.database.Database;
+import lt.andriaus.hangman.database.RamDatabase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
