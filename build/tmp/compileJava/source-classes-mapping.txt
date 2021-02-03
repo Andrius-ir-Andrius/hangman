@@ -1,9 +1,0 @@
-lt/andriaus/hangman/domain/Game.java
- lt.andriaus.hangman.domain.Game
- lt.andriaus.hangman.domain.Game$Builder
-lt/andriaus/hangman/kata/Arge.java
- lt.andriaus.hangman.kata.Arge
-lt/andriaus/hangman/useCases/Database.java
- lt.andriaus.hangman.useCases.Database
-lt/andriaus/hangman/useCases/RamDatabase.java
- lt.andriaus.hangman.useCases.RamDatabase
