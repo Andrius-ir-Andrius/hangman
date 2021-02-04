@@ -1,4 +1,6 @@
-package lt.andriaus.hangman.database;
+package lt.andriaus.hangman.usecase;
+
+import lt.andriaus.hangman.database.Database;
 
 import java.util.HashMap;
 import java.util.Map;
