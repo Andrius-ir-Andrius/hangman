@@ -60,6 +60,10 @@ public class Game {
         return GameStatus.ONGOING;
     }
 
+    public static boolean wasNewLetterAdded(Game previousGame, Game currentGame) {
+        return !previousGame.guessedLetters.containsAll(currentGame.guessedLetters);
+    }
+
 
     public static class Builder {
         private final String word;

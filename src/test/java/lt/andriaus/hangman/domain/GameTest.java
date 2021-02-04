@@ -76,4 +76,18 @@ public class GameTest {
         assertThat(lostGame.getGameStatus()).isEqualTo(Game.GameStatus.LOSS);
     }
 
+    @Test
+    void shouldBeLetterAdded() {
+        Game previousGame = game.guessLetter('F');
+        Game currentGame = previousGame.guessLetter('D');
+        assertThat(Game.wasNewLetterAdded(previousGame, currentGame)).isTrue();
+    }
+
+    @Test
+    void shouldNotBeLetterAdded() {
+        Game previousGame = game.guessLetter('F');
+        Game currentGame = previousGame.guessLetter('F');
+        assertThat(Game.wasNewLetterAdded(previousGame, currentGame)).isFalse();
+    }
+
 }
