@@ -14,7 +14,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GameUnitTest {
+public class GameTest {
     private final String word = "ABC";
     private final Game game = Game.Builder.fromWord(word).build();
     private final Game spiedGame = spy(game);
@@ -47,10 +47,10 @@ public class GameUnitTest {
         Game gameWithWrongWord = spy(Game.Builder.fromWord("aBc").build());
         when(gameWithWrongWord.getGameStatus()).thenReturn(Game.GameStatus.ONGOING);
 
-        Game guessedLetter = gameWithWrongWord.guessLetter('D').guessLetter('c');
-        Set<Character> result = guessedLetter.getGuessedLetters();
+        Game gameWithGuessedLetters = gameWithWrongWord.guessLetter('D').guessLetter('c');
+        Set<Character> result = gameWithGuessedLetters.getGuessedLetters();
 
-        assertThat(guessedLetter.getWord()).isEqualTo("ABC");
+        assertThat(gameWithGuessedLetters.getWord()).isEqualTo("ABC");
         assertThat(result).contains('D');
         assertThat(result).contains('C');
     }
@@ -62,17 +62,17 @@ public class GameUnitTest {
 
     @Test
     void shouldBeVictory() {
-        Set<Character> charList = word.chars()
+        Set<Character> wordCharSet = word.chars()
                 .mapToObj(e -> (char) e).collect(Collectors.toSet());
-        Game finishedGame = Game.Builder.fromWord(word).withLetters(charList).build();
+        Game finishedGame = Game.Builder.fromWord(word).withLetters(wordCharSet).build();
         assertThat(finishedGame.getGameStatus()).isEqualTo(Game.GameStatus.VICTORY);
     }
 
     @Test
     void shouldBeLoss() {
-        Set<Character> charList = "ADEFGHIJKLM".chars()
+        Set<Character> wordCharSet = "ADEFGHIJKLM".chars()
                 .mapToObj(e -> (char) e).collect(Collectors.toSet());
-        Game lostGame = Game.Builder.fromWord(word).withLetters(charList).build();
+        Game lostGame = Game.Builder.fromWord(word).withLetters(wordCharSet).build();
         assertThat(lostGame.getGameStatus()).isEqualTo(Game.GameStatus.LOSS);
     }
 

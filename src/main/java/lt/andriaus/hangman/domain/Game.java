@@ -15,9 +15,9 @@ public class Game {
         ONGOING, VICTORY, LOSS;
     }
 
-    private Game(String word, Set<Character> letters) {
+    private Game(String word, Set<Character> guessedLetters) {
         this.word = word;
-        this.guessedLetters = letters;
+        this.guessedLetters = guessedLetters;
     }
 
     public String getWord() {
@@ -63,11 +63,11 @@ public class Game {
 
     public static class Builder {
         private final String word;
-        private final Set<Character> letters;
+        private final Set<Character> guessedLetters;
 
-        public Builder(String word, Set<Character> letters) {
+        public Builder(String word, Set<Character> guessedLetters) {
             this.word = word.toUpperCase();
-            this.letters = letters;
+            this.guessedLetters = guessedLetters;
         }
 
         public static Builder fromGame(Game game) {
@@ -83,7 +83,7 @@ public class Game {
         }
 
         public Game build() {
-            return new Game(word, letters);
+            return new Game(word, guessedLetters);
         }
     }
 

@@ -12,9 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 public class GameIntegrationTest {
     private final String word = "ABC";
-    private final Set<Character> guessedLettersList = "ABDEFGHIJK".chars()
+    private final Set<Character> guessedLettersSet = "ABDEFGHIJK".chars()
             .mapToObj(e -> (char) e).collect(Collectors.toSet());
-    private final Game game = Game.Builder.fromWord(word).withLetters(guessedLettersList).build();
+    private final Game game = Game.Builder.fromWord(word).withLetters(guessedLettersSet).build();
 
     @Test
     void shouldAddLetter() {
