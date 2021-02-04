@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 public class GameIntegrationTest {
@@ -66,7 +67,11 @@ public class GameIntegrationTest {
                 .guessLetter('L')
                 .guessLetter('C');
 
-        Assertions.assertThrows(RuntimeException.class, () -> lostGame.guessLetter('z'));
-        Assertions.assertThrows(RuntimeException.class, () -> wonGame.guessLetter('z'));
+        assertThatThrownBy(() -> lostGame.guessLetter('z'))
+                .isInstanceOf(GameException.class)
+                .hasMessageContaining(GameException.Exceptions.GameIsAlreadyOverException.toString());
+        assertThatThrownBy(() -> wonGame.guessLetter('z'))
+                .isInstanceOf(GameException.class)
+                .hasMessageContaining(GameException.Exceptions.GameIsAlreadyOverException.toString());
     }
 }
