@@ -1,21 +1,21 @@
 package lt.andriaus.hangman.domain;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 
 public class Game {
     private final String word;
-    private final List<Character> guessedLetters;
+    private final Set<Character> guessedLetters;
 
     public enum GameStatus {
         ONGOING, VICTORY, LOSS;
     }
 
-    private Game(String word, List<Character> letters) {
+    private Game(String word, Set<Character> letters) {
         this.word = word;
         this.guessedLetters = letters;
     }
@@ -25,7 +25,9 @@ public class Game {
     }
 
     public Game guessLetter(Character letter) {
-        List<Character> list = new ArrayList<>(guessedLetters);
+        if (getGameStatus() != GameStatus.ONGOING)
+            return this;
+        Set<Character> list = new HashSet<>(guessedLetters);
         if (Character.isAlphabetic(letter))
             list.add(letter.toString().toUpperCase().toCharArray()[0]);
 
@@ -35,7 +37,7 @@ public class Game {
 
     }
 
-    public List<Character> getGuessedLetters() {
+    public Set<Character> getGuessedLetters() {
         return guessedLetters;
     }
 
@@ -43,8 +45,9 @@ public class Game {
         List<Character> wordChars = word.chars()
                 .mapToObj(e -> (char) e).collect(Collectors.toList());
 
-        List<Character> incorrectlyGuessedLetters = guessedLetters.stream()
-                .filter(character -> !wordChars.contains((Character) character)).collect(Collectors.toList());
+        Set<Character> incorrectlyGuessedLetters = guessedLetters.stream()
+                .filter(character -> !wordChars.contains((Character) character)).collect(Collectors.toSet());
+
 
         //if the amount of incorrectly guessed letters is higher than allowed
         if (incorrectlyGuessedLetters.size() >= 10)
@@ -60,9 +63,9 @@ public class Game {
 
     public static class Builder {
         private final String word;
-        private final List<Character> letters;
+        private final Set<Character> letters;
 
-        public Builder(String word, List<Character> letters) {
+        public Builder(String word, Set<Character> letters) {
             this.word = word.toUpperCase();
             this.letters = letters;
         }
@@ -72,11 +75,11 @@ public class Game {
         }
 
         public static Builder fromWord(String word) {
-            return new Builder(word, emptyList());
+            return new Builder(word, emptySet());
         }
 
-        public Builder withLetters(List<Character> letters) {
-            return new Builder(word, unmodifiableList(letters));
+        public Builder withLetters(Set<Character> letters) {
+            return new Builder(word, unmodifiableSet(letters));
         }
 
         public Game build() {
