@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +31,9 @@ public class GameTest {
 
         Game firstGuess = spiedGame.guessLetter('D');
 
-        Assertions.assertThrows(RuntimeException.class, () -> spiedGame.guessLetter('5'));
+        assertThatThrownBy(() -> spiedGame.guessLetter('5'))
+                .isInstanceOf(GameException.class)
+                .hasMessageContaining(GameException.Exceptions.SymbolIsNotAlphabeticException.toString());
         assertThat(firstGuess.getGuessedLetters().contains('D')).isTrue();
     }
 

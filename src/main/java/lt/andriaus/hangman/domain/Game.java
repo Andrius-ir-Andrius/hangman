@@ -29,10 +29,10 @@ public class Game {
 
     public Game guessLetter(Character letter) {
         if (getGameStatus() != GameStatus.ONGOING)
-            throw new RuntimeException("GameIsAlreadyOverException");
+            throw GameException.GameIsAlreadyOverException();
 
         if (!Character.isAlphabetic(letter))
-            throw new RuntimeException("SymbolIsNotAlphabeticException");
+            throw GameException.SymbolIsNotAlphabeticException();
 
         Set<Character> newSet = new HashSet<>(guessedLetters);
         newSet.add(Character.toUpperCase(letter));
