@@ -4,13 +4,14 @@ import lt.andriaus.hangman.database.Database;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.unmodifiableMap;
 
 public class RamDatabase<E> implements Database<E> {
     private final Map<Integer, E> gamesById;
-    private AtomicInteger atomicId;
+    private final AtomicInteger atomicId;
 
     public RamDatabase() {
         this.gamesById = new HashMap<>();
@@ -30,8 +31,8 @@ public class RamDatabase<E> implements Database<E> {
     }
 
     @Override
-    public E loadOne(int id) {
-        return this.gamesById.get(id);
+    public Optional<E> loadOne(int id) {
+        return Optional.ofNullable(this.gamesById.get(id));
     }
 
     @Override

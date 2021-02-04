@@ -1,9 +1,10 @@
 package lt.andriaus.hangman.database;
 
 import java.util.Map;
+import java.util.Optional;
 
 public interface Database<E> {
-    E loadOne(int id);
+    Optional<E> loadOne(int id);
 
     Map<Integer, E> loadAll();
 

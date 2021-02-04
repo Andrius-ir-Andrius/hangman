@@ -1,7 +1,6 @@
 package lt.andriaus.hangman.domain;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,12 +16,6 @@ import static org.mockito.Mockito.when;
 public class GameTest {
     private final String word = "ABC";
     private final Game game = Game.Builder.fromWord(word).build();
-    private final Game spiedGame = spy(game);
-
-    @BeforeEach
-    void prepare() {
-        when(spiedGame.getGameStatus()).thenReturn(Game.GameStatus.ONGOING);
-    }
 
     @Test
     void shouldCreateGameWithWord() {
@@ -32,9 +25,13 @@ public class GameTest {
 
     @Test
     void shouldAddLetterOnly() {
-        Set<Character> guessedLetters = spiedGame.guessLetter('D').guessLetter('5').getGuessedLetters();
-        assertThat(guessedLetters).contains('D');
-        assertThat(guessedLetters).doesNotContain('5');
+        Game spiedGame = spy(game);
+        when(spiedGame.getGameStatus()).thenReturn(Game.GameStatus.ONGOING);
+
+        Game firstGuess = spiedGame.guessLetter('D');
+
+        Assertions.assertThrows(RuntimeException.class, () -> spiedGame.guessLetter('5'));
+        assertThat(firstGuess.getGuessedLetters().contains('D')).isTrue();
     }
 
     @Test
@@ -47,11 +44,10 @@ public class GameTest {
         Game gameWithWrongWord = spy(Game.Builder.fromWord("aBc").build());
         when(gameWithWrongWord.getGameStatus()).thenReturn(Game.GameStatus.ONGOING);
 
-        Game gameWithGuessedLetters = gameWithWrongWord.guessLetter('D').guessLetter('c');
+        Game gameWithGuessedLetters = gameWithWrongWord.guessLetter('c');
         Set<Character> result = gameWithGuessedLetters.getGuessedLetters();
 
         assertThat(gameWithGuessedLetters.getWord()).isEqualTo("ABC");
-        assertThat(result).contains('D');
         assertThat(result).contains('C');
     }
 
@@ -73,21 +69,7 @@ public class GameTest {
         Set<Character> wordCharSet = "ADEFGHIJKLM".chars()
                 .mapToObj(e -> (char) e).collect(Collectors.toSet());
         Game lostGame = Game.Builder.fromWord(word).withLetters(wordCharSet).build();
-        assertThat(lostGame.getGameStatus()).isEqualTo(Game.GameStatus.LOSS);
-    }
-
-    @Test
-    void shouldBeLetterAdded() {
-        Game previousGame = game.guessLetter('F');
-        Game currentGame = previousGame.guessLetter('D');
-        assertThat(Game.wasNewLetterAdded(previousGame, currentGame)).isTrue();
-    }
-
-    @Test
-    void shouldNotBeLetterAdded() {
-        Game previousGame = game.guessLetter('F');
-        Game currentGame = previousGame.guessLetter('F');
-        assertThat(Game.wasNewLetterAdded(previousGame, currentGame)).isFalse();
+        assertThat(lostGame.getGameStatus()).isEqualTo(Game.GameStatus.LOST);
     }
 
 }

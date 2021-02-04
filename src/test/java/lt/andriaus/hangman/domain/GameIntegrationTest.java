@@ -1,5 +1,7 @@
 package lt.andriaus.hangman.domain;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -11,10 +13,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class GameIntegrationTest {
-    private final String word = "ABC";
-    private final Set<Character> guessedLettersSet = "ABDEFGHIJK".chars()
-            .mapToObj(e -> (char) e).collect(Collectors.toSet());
-    private final Game game = Game.Builder.fromWord(word).withLetters(guessedLettersSet).build();
+    private static String word;
+    private static Set<Character> guessedLettersSet;
+    private static Game game;
+
+    @BeforeAll
+    static void setUp() {
+        word = "ABC";
+        guessedLettersSet = "ABDEFGHIJK".chars()
+                .mapToObj(e -> (char) e).collect(Collectors.toSet());
+        game = Game.Builder.fromWord(word).withLetters(guessedLettersSet).build();
+    }
 
     @Test
     void shouldAddLetter() {
@@ -24,20 +33,40 @@ public class GameIntegrationTest {
 
     @Test
     void shouldBeOngoing() {
-        Game ongoingGame = game.guessLetter('L').guessLetter('A').guessLetter('l');
+        Game ongoingGame = game
+                .guessLetter('L')
+                .guessLetter('A')
+                .guessLetter('l');
         assertThat(ongoingGame.getGameStatus()).isEqualTo(Game.GameStatus.ONGOING);
     }
 
     @Test
     void shouldBeVictory() {
-        Game finishedGame = game.guessLetter('L').guessLetter('C');
-        assertThat(finishedGame.getGameStatus()).isEqualTo(Game.GameStatus.VICTORY);
+        Game wonGame = game
+                .guessLetter('L')
+                .guessLetter('C');
+        assertThat(wonGame.getGameStatus()).isEqualTo(Game.GameStatus.VICTORY);
     }
 
     @Test
     void shouldBeLoss() {
-        Game lostGame = game.guessLetter('L').guessLetter('m');
-        assertThat(lostGame.getGameStatus()).isEqualTo(Game.GameStatus.LOSS);
+        Game lostGame = game
+                .guessLetter('L')
+                .guessLetter('m');
+        assertThat(lostGame.getGameStatus()).isEqualTo(Game.GameStatus.LOST);
     }
 
+    @Test
+    void shouldThrowExceptionWhenGameIsOver() {
+        Game lostGame = game
+                .guessLetter('L')
+                .guessLetter('m');
+
+        Game wonGame = game
+                .guessLetter('L')
+                .guessLetter('C');
+
+        Assertions.assertThrows(RuntimeException.class, () -> lostGame.guessLetter('z'));
+        Assertions.assertThrows(RuntimeException.class, () -> wonGame.guessLetter('z'));
+    }
 }

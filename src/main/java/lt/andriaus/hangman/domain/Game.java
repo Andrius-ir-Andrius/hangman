@@ -10,9 +10,10 @@ import static java.util.Collections.*;
 public class Game {
     private final String word;
     private final Set<Character> guessedLetters;
+    private static final int MAX_ALLOWED_LETTERS = 10;
 
     public enum GameStatus {
-        ONGOING, VICTORY, LOSS;
+        ONGOING, VICTORY, LOST;
     }
 
     private Game(String word, Set<Character> guessedLetters) {
@@ -26,15 +27,14 @@ public class Game {
 
     public Game guessLetter(Character letter) {
         if (getGameStatus() != GameStatus.ONGOING)
-            return this;
-        Set<Character> list = new HashSet<>(guessedLetters);
-        if (Character.isAlphabetic(letter))
-            list.add(letter.toString().toUpperCase().toCharArray()[0]);
+            throw new RuntimeException("GameIsAlreadyOverException");
 
-        return Builder.fromGame(this)
-                .withLetters(list)
-                .build();
+        if (!Character.isAlphabetic(letter))
+            throw new RuntimeException("SymbolIsNotAlphabeticException");
 
+        Set<Character> newSet = new HashSet<>(guessedLetters);
+        newSet.add(Character.toUpperCase(letter));
+        return Builder.fromGame(this).withLetters(newSet).build();
     }
 
     public Set<Character> getGuessedLetters() {
@@ -43,27 +43,23 @@ public class Game {
 
     public GameStatus getGameStatus() {
         List<Character> wordChars = word.chars()
-                .mapToObj(e -> (char) e).collect(Collectors.toList());
+                .mapToObj(e -> (char) e)
+                .collect(Collectors.toList());
 
-        Set<Character> incorrectlyGuessedLetters = guessedLetters.stream()
-                .filter(character -> !wordChars.contains((Character) character)).collect(Collectors.toSet());
+        Set<Character> incorrectlyGuessedLetters = guessedLetters
+                .stream()
+                .filter(character -> !wordChars.contains(character))
+                .collect(Collectors.toSet());
 
 
-        //if the amount of incorrectly guessed letters is higher than allowed
-        if (incorrectlyGuessedLetters.size() >= 10)
-            return GameStatus.LOSS;
+        if (incorrectlyGuessedLetters.size() >= MAX_ALLOWED_LETTERS)
+            return GameStatus.LOST;
 
-        //if the game is already guessed correctly
         if (guessedLetters.containsAll(wordChars))
             return GameStatus.VICTORY;
 
         return GameStatus.ONGOING;
     }
-
-    public static boolean wasNewLetterAdded(Game previousGame, Game currentGame) {
-        return !previousGame.guessedLetters.containsAll(currentGame.guessedLetters);
-    }
-
 
     public static class Builder {
         private final String word;
