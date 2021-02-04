@@ -1,5 +1,6 @@
 package lt.andriaus.hangman.domain;
 
+import lt.andriaus.hangman.util.Utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,8 +21,7 @@ public class GameIntegrationTest {
     @BeforeAll
     static void setUp() {
         word = "ABC";
-        guessedLettersSet = "ABDEFGHIJK".chars()
-                .mapToObj(e -> (char) e).collect(Collectors.toSet());
+        guessedLettersSet = Utils.StringToCharSet("ABDEFGHIJK");
         game = Game.Builder.fromWord(word).withLetters(guessedLettersSet).build();
     }
 

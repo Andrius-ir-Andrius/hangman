@@ -1,5 +1,7 @@
 package lt.andriaus.hangman.domain;
 
+import lt.andriaus.hangman.util.Utils;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,9 +44,7 @@ public class Game {
     }
 
     public GameStatus getGameStatus() {
-        List<Character> wordChars = word.chars()
-                .mapToObj(e -> (char) e)
-                .collect(Collectors.toList());
+        List<Character> wordChars = Utils.StringToCharList(word);
 
         Set<Character> incorrectlyGuessedLetters = guessedLetters
                 .stream()
