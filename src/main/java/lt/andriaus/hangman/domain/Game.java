@@ -1,63 +1,89 @@
 package lt.andriaus.hangman.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import lt.andriaus.hangman.util.Utils;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.*;
 
 public class Game {
     private final String word;
-    private final List<Character> letters;
+    private final Set<Character> guessedLetters;
+    private static final int MAX_ALLOWED_LETTERS = 10;
 
-    private Game(String word, List<Character> letters) {
+    public enum GameStatus {
+        ONGOING, VICTORY, LOST;
+    }
+
+    private Game(String word, Set<Character> guessedLetters) {
         this.word = word;
-        this.letters = letters;
+        this.guessedLetters = guessedLetters;
     }
 
     public String getWord() {
         return word;
     }
 
-    public Game guessLetter(char letter) {
-        List<Character> list = new ArrayList<>(letters);
-        if (Character.isAlphabetic(letter))
-            list.add(letter);
+    public Game guessLetter(Character letter) {
+        if (getGameStatus() != GameStatus.ONGOING)
+            throw GameException.GameIsAlreadyOverException();
 
-        return Builder.from(this)
-                .withLetters(list)
-                .build();
+        if (!Character.isAlphabetic(letter))
+            throw GameException.SymbolIsNotAlphabeticException();
+
+        Set<Character> newSet = new HashSet<>(guessedLetters);
+        newSet.add(Character.toUpperCase(letter));
+        return Builder.fromGame(this).withLetters(newSet).build();
     }
 
-    public List<Character> getLetters() {
-        return this.letters;
+    public Set<Character> getGuessedLetters() {
+        return guessedLetters;
     }
 
+    public GameStatus getGameStatus() {
+        List<Character> wordChars = Utils.StringToCharList(word);
+
+        Set<Character> incorrectlyGuessedLetters = guessedLetters
+                .stream()
+                .filter(character -> !wordChars.contains(character))
+                .collect(Collectors.toSet());
+
+
+        if (incorrectlyGuessedLetters.size() >= MAX_ALLOWED_LETTERS)
+            return GameStatus.LOST;
+
+        if (guessedLetters.containsAll(wordChars))
+            return GameStatus.VICTORY;
+
+        return GameStatus.ONGOING;
+    }
 
     public static class Builder {
         private final String word;
-        private List<Character> letters;
+        private final Set<Character> guessedLetters;
 
-        public Builder(String word, List<Character> letters) {
-            this.word = word;
-            this.letters = letters;
+        public Builder(String word, Set<Character> guessedLetters) {
+            this.word = word.toUpperCase();
+            this.guessedLetters = guessedLetters;
         }
 
-        public static Builder from(Game game) {
-            return new Builder(game.word, game.letters);
+        public static Builder fromGame(Game game) {
+            return new Builder(game.word, game.guessedLetters);
         }
 
         public static Builder fromWord(String word) {
-            return new Builder(word, emptyList());
+            return new Builder(word, emptySet());
         }
 
-        public Builder withLetters(List<Character> letters) {
-            this.letters = unmodifiableList(letters);
-            return new Builder(word, this.letters);
+        public Builder withLetters(Set<Character> letters) {
+            return new Builder(word, unmodifiableSet(letters));
         }
 
         public Game build() {
-            return new Game(word, letters);
+            return new Game(word, guessedLetters);
         }
     }
 
