@@ -10,12 +10,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GameInRamManagerTest {
-    GameInRamManager gameInRamManager;
+class BasicGameManagerTest {
+    BasicGameManager basicGameManager;
     @Mock
     Game game;
     @Mock
@@ -26,16 +26,21 @@ class GameInRamManagerTest {
 
     @BeforeEach
     void setup(){
-        gameInRamManager = new GameInRamManager(wordDB, gameDB);
+        basicGameManager = new BasicGameManager(wordDB, gameDB);
     }
 
     @Test
+    void shouldNotCreateGame() {
+        when(wordDB.loadRandom()).thenReturn(Optional.empty());
+        assertThatThrownBy(() ->basicGameManager.createGame())
+                .isInstanceOf(GameManagerException.class)
+                .hasMessageContaining("FailedToCreateGameException");
+    }
+    @Test
     void shouldCreateGame() {
-        Map<Integer, String> wordMap = new HashMap<>();
-        wordMap.put(0, "HELLO");
-        when(wordDB.loadAll()).thenReturn(wordMap);
-        when(gameDB.save(any())).thenReturn(0);
-        int newGameId = gameInRamManager.createGame();
+        String word = "HELLO";
+        when(wordDB.loadRandom()).thenReturn(Optional.of(word));
+        int newGameId = basicGameManager.createGame();
         assertThat(newGameId).isEqualTo(0);
     }
 
@@ -43,14 +48,14 @@ class GameInRamManagerTest {
     void shouldLoadGame() {
         when(game.getWord()).thenReturn("HELLO");
         when(gameDB.loadOne(0)).thenReturn(Optional.of(game));
-        Optional<Game> existingGame = gameInRamManager.loadGame(0);
+        Optional<Game> existingGame = basicGameManager.loadGame(0);
         assertThat(existingGame.isPresent()).isTrue();
         assertThat(existingGame.get().getWord()).isEqualTo("HELLO");
     }
     @Test
     void shouldNotLoadGame() {
         when(gameDB.loadOne(1)).thenReturn(Optional.empty());
-        Optional<Game> notExistingGame = gameInRamManager.loadGame(1);
+        Optional<Game> notExistingGame = basicGameManager.loadGame(1);
         assertThat(notExistingGame.isEmpty()).isTrue();
     }
 }

@@ -14,19 +14,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
-class GameInRamManagerIntegrationTest {
-    private static Database<Game> gameDB;
-    private static Database<String> wordDB;
+class BasicGameManagerIntegrationTest {
     private static GameManager gameManager;
 
 
     @BeforeAll
     static void setup(){
-        wordDB = new RamDatabase<>();
-        wordDB.save("Hello");
+        Database<String> wordDB = new RamDatabase<>();
         wordDB.save("Adele");
-        gameDB = new RamDatabase<>();
-        gameManager = new GameInRamManager(wordDB, gameDB);
+        Database<Game> gameDB = new RamDatabase<>();
+        gameManager = new BasicGameManager(wordDB, gameDB);
     }
 
     @Test
@@ -39,28 +36,28 @@ class GameInRamManagerIntegrationTest {
     void shouldCreateAndLoadGame() {
         int newGameId = gameManager.createGame();
         Optional<Game> newGame = gameManager.loadGame(newGameId);
-        assertThat(newGame.isPresent()).isTrue();
-        assertThat(Arrays.asList(new String[]{"HELLO", "ADELE"}).contains(newGame.get().getWord())).isTrue();
+        assertThat(newGame).isPresent();
+        assertThat(newGame.get().getWord()).isEqualTo("ADELE");
     }
 
     @Test
-    void shouldGetEmptyGame(){
+    void shouldGetEmptyOptionalGame(){
         Optional<Game> emptyGame = gameManager.loadGame(-1);
-        assertThat(emptyGame.isEmpty()).isTrue();
+        assertThat(emptyGame).isEmpty();
     }
 
     @Test
     void shouldFailAtGuessing(){
         Optional<Game> gameAfterGuess = gameManager.guessLetter(-1, 'C');
-        assertThat(gameAfterGuess.isEmpty()).isTrue();
+        assertThat(gameAfterGuess).isEmpty();
     }
 
     @Test
     void shouldAddLettersAfterGuessing(){
         int newGameId = gameManager.createGame();
-        Optional<Game> gameAfterGuesses = gameManager.guessLetter(newGameId, 'E');
-        gameAfterGuesses = gameManager.guessLetter(newGameId, 'B');
-        assertThat(gameAfterGuesses.isPresent()).isTrue();
+        gameManager.guessLetter(newGameId, 'E');
+        Optional<Game> gameAfterGuesses = gameManager.guessLetter(newGameId, 'B');
+        assertThat(gameAfterGuesses).isPresent();
         assertThat(gameAfterGuesses.get().getGuessedLetters().size()).isEqualTo(2);
     }
 
@@ -77,16 +74,8 @@ class GameInRamManagerIntegrationTest {
     @Test
     void shouldThrowWhenGameIsLost(){
         int newGameId = gameManager.createGame();
-        gameManager.guessLetter(newGameId, 'B');
-        gameManager.guessLetter(newGameId, 'C');
-        gameManager.guessLetter(newGameId, 'F');
-        gameManager.guessLetter(newGameId, 'G');
-        gameManager.guessLetter(newGameId, 'I');
-        gameManager.guessLetter(newGameId, 'J');
-        gameManager.guessLetter(newGameId, 'K');
-        gameManager.guessLetter(newGameId, 'M');
-        gameManager.guessLetter(newGameId, 'N');
-        gameManager.guessLetter(newGameId, 'P');
+        List.of('b', 'c', 'f', 'g', 'i', 'j', 'k', 'm', 'n', 'p')
+                .forEach(guess -> gameManager.guessLetter(newGameId, guess));
         assertThatThrownBy(() -> gameManager
                 .guessLetter(newGameId, 'R'))
                 .isInstanceOf(GameException.class)
@@ -95,17 +84,8 @@ class GameInRamManagerIntegrationTest {
     @Test
     void shouldThrowWhenGameIsWon(){
         int newGameId = gameManager.createGame();
-        Character[] nameLetters;
-        Game newGame = gameManager.loadGame(newGameId).get();
-        if(newGame.getWord().equals("ADELE")){
-            nameLetters = new Character[]{'a', 'd', 'e', 'l'};
-        }else{
-            nameLetters = new Character[]{'h', 'e', 'l', 'o'};
-        }
-        gameManager.guessLetter(newGameId, nameLetters[0]);
-        gameManager.guessLetter(newGameId, nameLetters[1]);
-        gameManager.guessLetter(newGameId, nameLetters[2]);
-        gameManager.guessLetter(newGameId, nameLetters[3]);
+        List.of('a', 'd', 'e', 'l')
+                .forEach(guess -> gameManager.guessLetter(newGameId, guess));
         assertThatThrownBy(() -> gameManager
                 .guessLetter(newGameId, 'Z'))
                 .isInstanceOf(GameException.class)
