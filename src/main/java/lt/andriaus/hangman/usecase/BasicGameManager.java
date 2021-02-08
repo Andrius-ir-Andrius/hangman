@@ -17,7 +17,7 @@ public class BasicGameManager implements GameManager {
     public int createGame() {
         Optional<String> randomWord = wordDB.loadRandom();
         if (randomWord.isEmpty())
-            throw GameManagerException.FailedToCreateGameException();
+            throw GameManagerException.failedToCreateGameException();
         Game newGame = Game.Builder.fromWord(randomWord.get()).build();
         return gameDB.save(newGame);
     }

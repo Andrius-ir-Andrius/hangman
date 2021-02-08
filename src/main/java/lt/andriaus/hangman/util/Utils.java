@@ -6,13 +6,13 @@ import java.util.stream.Collectors;
 
 public class Utils {
 
-    static public Set<Character> StringToCharSet(String inputString) {
+    static public Set<Character> stringToCharSet(String inputString) {
         return inputString.chars()
                 .mapToObj(e -> (char) e)
                 .collect(Collectors.toSet());
     }
 
-    static public List<Character> StringToCharList(String inputString) {
+    static public List<Character> stringToCharList(String inputString) {
         return inputString.chars()
                 .mapToObj(e -> (char) e)
                 .collect(Collectors.toList());

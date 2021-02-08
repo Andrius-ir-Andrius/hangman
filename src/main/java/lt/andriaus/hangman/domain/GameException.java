@@ -6,11 +6,11 @@ public class GameException extends RuntimeException {
         super(message);
     }
 
-    public static GameException GameIsAlreadyOverException() {
+    public static GameException gameIsAlreadyOverException() {
         return new GameException("GameIsAlreadyOverException");
     }
 
-    public static GameException SymbolIsNotAlphabeticException() {
+    public static GameException symbolIsNotAlphabeticException() {
         return new GameException("SymbolIsNotAlphabeticException");
     }
 

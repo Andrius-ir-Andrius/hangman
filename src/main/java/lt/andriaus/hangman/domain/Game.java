@@ -29,10 +29,10 @@ public class Game {
 
     public Game guessLetter(Character letter) {
         if (getGameStatus() != GameStatus.ONGOING)
-            throw GameException.GameIsAlreadyOverException();
+            throw GameException.gameIsAlreadyOverException();
 
         if (!Character.isAlphabetic(letter))
-            throw GameException.SymbolIsNotAlphabeticException();
+            throw GameException.symbolIsNotAlphabeticException();
 
         Set<Character> newSet = new HashSet<>(guessedLetters);
         newSet.add(Character.toUpperCase(letter));
@@ -48,7 +48,7 @@ public class Game {
     }
 
     public GameStatus getGameStatus() {
-        List<Character> wordChars = Utils.StringToCharList(word);
+        List<Character> wordChars = Utils.stringToCharList(word);
 
         Set<Character> incorrectlyGuessedLetters = guessedLetters
                 .stream()
