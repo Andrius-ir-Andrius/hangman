@@ -32,7 +32,7 @@ public class Game {
             throw GameException.gameIsAlreadyOverException();
 
         if (!Character.isAlphabetic(letter))
-            throw GameException.symbolIsNotAlphabeticException();
+            throw GameException.symbolIsNotAlphabeticException(letter);
 
         Set<Character> newSet = new HashSet<>(guessedLetters);
         newSet.add(Character.toUpperCase(letter));

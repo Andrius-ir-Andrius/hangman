@@ -10,8 +10,8 @@ public class GameException extends RuntimeException {
         return new GameException("GameIsAlreadyOverException");
     }
 
-    public static GameException symbolIsNotAlphabeticException() {
-        return new GameException("SymbolIsNotAlphabeticException");
+    public static GameException symbolIsNotAlphabeticException(char letter) {
+        return new GameException(String.format("SymbolIsNotAlphabeticException; letter=%s", letter));
     }
 
 }

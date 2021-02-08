@@ -3,7 +3,9 @@ package lt.andriaus.hangman.util;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,10 +36,11 @@ class StringUtilsTest {
 
     @Test
     void shouldReturnString() {
-        Set<Character> wordSet = Utils.stringToCharSet(wordString);
+        Set<Character> wordSet = new HashSet<>(List.of('a', 'b', 'c', 'd'));
         String setString = Utils.CharSetToString(wordSet);
         for(int i = 0; i < setString.length(); i++){
             assertThat(wordSet.contains(setString.charAt(i))).isTrue();
         }
+        assertThat(setString.length()).isEqualTo(wordSet.size());
     }
 }
