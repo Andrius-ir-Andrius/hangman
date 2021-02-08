@@ -40,12 +40,7 @@ public class Game {
     }
 
     public String getMaskedWord() {
-        return Utils.StringToCharList(word).stream().map(character -> {
-            if(guessedLetters.contains(character))
-                return character.toString();
-            else
-                return "_";
-        }).collect(Collectors.joining());
+        return word.replaceAll("[^\s"+Utils.CharSetToString(guessedLetters)+"]", "_");
     }
 
     public Set<Character> getGuessedLetters() {

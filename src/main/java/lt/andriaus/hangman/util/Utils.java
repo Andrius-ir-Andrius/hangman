@@ -17,4 +17,9 @@ public class Utils {
                 .mapToObj(e -> (char) e)
                 .collect(Collectors.toList());
     }
+
+    static public String CharSetToString(Set<Character> inputSet) {
+        List<String> stringList = inputSet.stream().map(String::valueOf).collect(Collectors.toList());
+        return String.join("", stringList);
+    }
 }
