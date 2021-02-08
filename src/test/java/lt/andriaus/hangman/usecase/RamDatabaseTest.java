@@ -71,8 +71,7 @@ public class RamDatabaseTest {
         String word = "test";
         database.save("test");
         Optional<String> wordFromDB = database.loadRandom();
-        assertThat(wordFromDB).isNotEmpty();
-        assertThat(wordFromDB.get()).isEqualTo(word);
+        assertThat(wordFromDB).hasValue(word);
     }
 
 }

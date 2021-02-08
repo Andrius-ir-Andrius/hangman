@@ -58,7 +58,7 @@ class BasicGameManagerIntegrationTest {
         gameManager.guessLetter(newGameId, 'E');
         Optional<Game> gameAfterGuesses = gameManager.guessLetter(newGameId, 'B');
         assertThat(gameAfterGuesses).isPresent();
-        assertThat(gameAfterGuesses.get().getGuessedLetters().size()).isEqualTo(2);
+        assertThat(gameAfterGuesses.map(Game::getGuessedLetters).map(Set::size)).hasValue(2);
     }
 
 

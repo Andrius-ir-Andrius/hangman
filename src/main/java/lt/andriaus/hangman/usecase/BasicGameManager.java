@@ -15,11 +15,10 @@ public class BasicGameManager implements GameManager {
     }
 
     public int createGame() {
-        Optional<String> randomWord = wordDB.loadRandom();
-        if (randomWord.isEmpty())
-            throw GameManagerException.failedToCreateGameException();
-        Game newGame = Game.Builder.fromWord(randomWord.get()).build();
-        return gameDB.save(newGame);
+        return wordDB.loadRandom()
+                .map(word -> Game.Builder.fromWord(word).build())
+                .map(gameDB::save)
+                .orElseThrow(GameManagerException::failedToCreateGameException);
     }
 
     public Optional<Game> loadGame(int id) {

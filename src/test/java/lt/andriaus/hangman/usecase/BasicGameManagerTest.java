@@ -25,17 +25,18 @@ class BasicGameManagerTest {
 
 
     @BeforeEach
-    void setup(){
+    void setup() {
         basicGameManager = new BasicGameManager(wordDB, gameDB);
     }
 
     @Test
     void shouldNotCreateGame() {
         when(wordDB.loadRandom()).thenReturn(Optional.empty());
-        assertThatThrownBy(() ->basicGameManager.createGame())
+        assertThatThrownBy(() -> basicGameManager.createGame())
                 .isInstanceOf(GameManagerException.class)
                 .hasMessageContaining("FailedToCreateGameException");
     }
+
     @Test
     void shouldCreateGame() {
         String word = "HELLO";
@@ -50,8 +51,9 @@ class BasicGameManagerTest {
         when(gameDB.loadOne(0)).thenReturn(Optional.of(game));
         Optional<Game> existingGame = basicGameManager.loadGame(0);
         assertThat(existingGame.isPresent()).isTrue();
-        assertThat(existingGame.get().getWord()).isEqualTo("HELLO");
+        assertThat(existingGame.map(Game::getWord)).hasValue("HELLO");
     }
+
     @Test
     void shouldNotLoadGame() {
         when(gameDB.loadOne(1)).thenReturn(Optional.empty());
