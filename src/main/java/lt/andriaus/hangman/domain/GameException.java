@@ -1,7 +1,7 @@
 package lt.andriaus.hangman.domain;
 
-class GameException extends RuntimeException {
-    enum Exceptions {
+public class GameException extends RuntimeException {
+    public enum Exceptions {
         GameIsAlreadyOverException,
         SymbolIsNotAlphabeticException
     }

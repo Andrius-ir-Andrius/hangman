@@ -75,4 +75,24 @@ public class GameTest {
         assertThat(lostGame.getGameStatus()).isEqualTo(Game.GameStatus.LOST);
     }
 
+    @Test
+    void shouldBeAllUnderlines() {
+        String maskedWord = game.getMaskedWord();
+        assertThat(maskedWord).isEqualTo("___");
+    }
+
+    @Test
+    void shouldUncoverTheSameLetter() {
+        Game game = Game.Builder.fromWord("MAMA").build().guessLetter('M');
+        String maskedWord = game.getMaskedWord();
+        assertThat(maskedWord).isEqualTo("M_M_");
+    }
+
+    @Test
+    void shouldAllLettersBeUncovered() {
+        Game game = Game.Builder.fromWord("MAMA").build().guessLetter('A').guessLetter('M');
+        String maskedWord = game.getMaskedWord();
+        assertThat(maskedWord).isEqualTo("MAMA");
+    }
+
 }

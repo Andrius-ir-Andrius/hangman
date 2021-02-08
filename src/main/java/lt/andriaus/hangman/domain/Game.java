@@ -39,6 +39,15 @@ public class Game {
         return Builder.fromGame(this).withLetters(newSet).build();
     }
 
+    public String getMaskedWord() {
+        return Utils.StringToCharList(word).stream().map(character -> {
+            if(guessedLetters.contains(character))
+                return character.toString();
+            else
+                return "_";
+        }).collect(Collectors.joining());
+    }
+
     public Set<Character> getGuessedLetters() {
         return guessedLetters;
     }
