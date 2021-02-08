@@ -5,16 +5,17 @@ import lt.andriaus.hangman.database.Database;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.unmodifiableMap;
 
 public class RamDatabase<E> implements Database<E> {
-    private final Map<Integer, E> gamesById;
+    private final Map<Integer, E> elementsById;
     private final AtomicInteger atomicId;
 
     public RamDatabase() {
-        this.gamesById = new HashMap<>();
+        this.elementsById = new HashMap<>();
         atomicId = new AtomicInteger();
     }
 
@@ -26,17 +27,25 @@ public class RamDatabase<E> implements Database<E> {
 
     @Override
     public int save(E element, int id) {
-        this.gamesById.put(id, element);
+        this.elementsById.put(id, element);
         return id;
     }
 
     @Override
+    public Optional<E> loadRandom() {
+        if(atomicId.get() == 0)
+            return Optional.empty();
+        int randomId = new Random().nextInt(elementsById.size());
+        return Optional.of(elementsById.get(randomId));
+    }
+
+    @Override
     public Optional<E> loadOne(int id) {
-        return Optional.ofNullable(this.gamesById.get(id));
+        return Optional.ofNullable(this.elementsById.get(id));
     }
 
     @Override
     public Map<Integer, E> loadAll() {
-        return unmodifiableMap(this.gamesById);
+        return unmodifiableMap(this.elementsById);
     }
 }

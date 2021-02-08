@@ -60,4 +60,19 @@ public class RamDatabaseTest {
         Assertions.assertThrows(UnsupportedOperationException.class, () -> result.put(0, DATA.get(1)));
     }
 
+    @Test
+    void shouldNotRetrieveRandom(){
+        Optional<String> wordFromDB = database.loadRandom();
+        assertThat(wordFromDB).isEmpty();
+    }
+
+    @Test
+    void shouldRetrieveRandom(){
+        String word = "test";
+        database.save("test");
+        Optional<String> wordFromDB = database.loadRandom();
+        assertThat(wordFromDB).isNotEmpty();
+        assertThat(wordFromDB.get()).isEqualTo(word);
+    }
+
 }
