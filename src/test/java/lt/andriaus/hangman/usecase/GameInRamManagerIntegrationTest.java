@@ -15,15 +15,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 class GameInRamManagerIntegrationTest {
+    private static Database<Game> gameDB;
+    private static Database<String> wordDB;
     private static GameManager gameManager;
 
 
     @BeforeAll
     static void setup(){
-        Database<String> wordDB = new RamDatabase<>();
+        wordDB = new RamDatabase<>();
         wordDB.save("Hello");
         wordDB.save("Adele");
-        Database<Game> gameDB = new RamDatabase<>();
+        gameDB = new RamDatabase<>();
         gameManager = new GameInRamManager(wordDB, gameDB);
     }
 
@@ -69,7 +71,7 @@ class GameInRamManagerIntegrationTest {
         assertThatThrownBy(() -> gameManager
                 .guessLetter(newGameId, '5'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining(GameException.Exceptions.SymbolIsNotAlphabeticException.toString());
+                .hasMessageContaining("SymbolIsNotAlphabeticException");
     }
 
     @Test
@@ -88,7 +90,7 @@ class GameInRamManagerIntegrationTest {
         assertThatThrownBy(() -> gameManager
                 .guessLetter(newGameId, 'R'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining(GameException.Exceptions.GameIsAlreadyOverException.toString());
+                .hasMessageContaining("GameIsAlreadyOverException");
     }
     @Test
     void shouldThrowWhenGameIsWon(){
@@ -107,7 +109,7 @@ class GameInRamManagerIntegrationTest {
         assertThatThrownBy(() -> gameManager
                 .guessLetter(newGameId, 'Z'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining(GameException.Exceptions.GameIsAlreadyOverException.toString());
+                .hasMessageContaining("GameIsAlreadyOverException");
     }
 
 }

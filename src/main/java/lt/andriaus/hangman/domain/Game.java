@@ -40,7 +40,7 @@ public class Game {
     }
 
     public String getMaskedWord() {
-        return word.replaceAll("[^\s"+Utils.CharSetToString(guessedLetters)+"]", "_");
+        return word.replaceAll("[^\\s"+Utils.CharSetToString(guessedLetters)+"]", "_");
     }
 
     public Set<Character> getGuessedLetters() {

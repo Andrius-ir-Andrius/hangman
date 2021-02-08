@@ -33,7 +33,7 @@ public class GameTest {
 
         assertThatThrownBy(() -> spiedGame.guessLetter('5'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining(GameException.Exceptions.SymbolIsNotAlphabeticException.toString());
+                .hasMessageContaining("SymbolIsNotAlphabeticException");
         assertThat(firstGuess.getGuessedLetters().contains('D')).isTrue();
     }
 
