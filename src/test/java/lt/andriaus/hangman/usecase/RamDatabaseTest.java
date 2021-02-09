@@ -68,10 +68,22 @@ public class RamDatabaseTest {
 
     @Test
     void shouldRetrieveRandom(){
-        String word = "test";
+        database.save("best");
         database.save("test");
-        Optional<String> wordFromDB = database.loadRandom();
-        assertThat(wordFromDB).hasValue(word);
+        boolean isBestSeen = false;
+        boolean isTestSeen = false;
+        int counter = 0;
+        while (counter++ < 100 && (!isTestSeen || !isBestSeen)){
+            Optional<String> optionalWord = database.loadRandom();
+            if(optionalWord.isEmpty())
+                break;
+            if(optionalWord.get().equals("best"))
+                isBestSeen = true;
+            if(optionalWord.get().equals("test"))
+                isTestSeen = true;
+        }
+        assertThat(isBestSeen).isTrue();
+        assertThat(isTestSeen).isTrue();
     }
 
 }
