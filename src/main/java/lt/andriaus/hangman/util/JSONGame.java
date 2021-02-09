@@ -15,6 +15,6 @@ public class JSONGame{
     public String getWord(){
         String word = game.getWord();
         Set<Character> letters = game.getGuessedLetters();
-        return word.replaceAll(String.format("[^\\s%s]", Utils.CharSetToString(letters)), "_");
+        return word.replaceAll(String.format("[^\\s%s]", StringUtils.CharSetToString(letters)), "_");
     }
 }

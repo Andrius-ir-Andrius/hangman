@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Utils {
+public class StringUtils {
 
     static public Set<Character> stringToCharSet(String inputString) {
         return inputString.chars()

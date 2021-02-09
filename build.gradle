@@ -15,7 +15,9 @@ def dep = rootProject.ext.dependencies
 def testDep = rootProject.ext.testingDependencies
 
 dependencies {
-
+    implementation  dep.spark
+    implementation  dep.jackson
+    implementation  dep.log4j
     testImplementation testDep.mockito
     testImplementation testDep.junit5
     testImplementation testDep.assertj

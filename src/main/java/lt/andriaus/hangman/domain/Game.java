@@ -1,6 +1,6 @@
 package lt.andriaus.hangman.domain;
 
-import lt.andriaus.hangman.util.Utils;
+import lt.andriaus.hangman.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +45,7 @@ public class Game {
     }
 
     public GameStatus getGameStatus() {
-        List<Character> wordChars = Utils.stringToCharList(word);
+        List<Character> wordChars = StringUtils.stringToCharList(word);
 
         Set<Character> incorrectlyGuessedLetters = guessedLetters
                 .stream()

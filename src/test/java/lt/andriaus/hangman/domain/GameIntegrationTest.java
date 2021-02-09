@@ -1,6 +1,6 @@
 package lt.andriaus.hangman.domain;
 
-import lt.andriaus.hangman.util.Utils;
+import lt.andriaus.hangman.util.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,7 @@ public class GameIntegrationTest {
     @BeforeAll
     static void setUp() {
         String word = "ABC";
-        Set<Character> guessedLettersSet = Utils.stringToCharSet("ABDEFGHIJK");
+        Set<Character> guessedLettersSet = StringUtils.stringToCharSet("ABDEFGHIJK");
         game = Game.Builder.fromWord(word).withLetters(guessedLettersSet).build();
     }
 
