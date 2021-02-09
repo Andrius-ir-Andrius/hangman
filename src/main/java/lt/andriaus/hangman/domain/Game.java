@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableSet;
 
 public class Game {
     private final String word;
@@ -37,10 +38,6 @@ public class Game {
         Set<Character> newSet = new HashSet<>(guessedLetters);
         newSet.add(Character.toUpperCase(letter));
         return Builder.fromGame(this).withLetters(newSet).build();
-    }
-
-    public String getMaskedWord() {
-        return word.replaceAll("[^\\s"+Utils.CharSetToString(guessedLetters)+"]", "_");
     }
 
     public Set<Character> getGuessedLetters() {
