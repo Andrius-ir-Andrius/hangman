@@ -7,7 +7,7 @@ public class GameManagerException extends RuntimeException {
     }
 
     public static GameManagerException failedToCreateGameException() {
-        return new GameManagerException("FailedToCreateGameException");
+        return new GameManagerException("Failed to create Game");
     }
 
 }

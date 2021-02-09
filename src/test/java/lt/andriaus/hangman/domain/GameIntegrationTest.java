@@ -65,9 +65,9 @@ public class GameIntegrationTest {
 
         assertThatThrownBy(() -> lostGame.guessLetter('z'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining("GameIsAlreadyOverException");
+                .hasMessageContaining("Game is already over");
         assertThatThrownBy(() -> wonGame.guessLetter('z'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining("GameIsAlreadyOverException");
+                .hasMessageContaining("Game is already over");
     }
 }

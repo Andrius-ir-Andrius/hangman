@@ -7,11 +7,11 @@ public class GameException extends RuntimeException {
     }
 
     public static GameException gameIsAlreadyOverException() {
-        return new GameException("GameIsAlreadyOverException");
+        return new GameException("Game is already over");
     }
 
     public static GameException symbolIsNotAlphabeticException(char letter) {
-        return new GameException(String.format("SymbolIsNotAlphabeticException; letter=%s", letter));
+        return new GameException(String.format("Symbol %s is not alphabetic", letter));
     }
 
 }

@@ -35,7 +35,7 @@ class BasicGameManagerTest {
         when(wordDB.loadRandom()).thenReturn(Optional.empty());
         assertThatThrownBy(() -> basicGameManager.createGame())
                 .isInstanceOf(GameManagerException.class)
-                .hasMessageContaining("FailedToCreateGameException");
+                .hasMessageContaining("Failed to create Game");
     }
 
     @Test

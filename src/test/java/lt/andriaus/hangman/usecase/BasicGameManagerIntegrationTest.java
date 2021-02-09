@@ -68,7 +68,7 @@ class BasicGameManagerIntegrationTest {
         assertThatThrownBy(() -> gameManager
                 .guessLetter(newGameId, '5'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining("SymbolIsNotAlphabeticException");
+                .hasMessageContaining("Symbol 5 is not alphabetic");
     }
 
     @Test
@@ -79,7 +79,7 @@ class BasicGameManagerIntegrationTest {
         assertThatThrownBy(() -> gameManager
                 .guessLetter(newGameId, 'R'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining("GameIsAlreadyOverException");
+                .hasMessageContaining("Game is already over");
     }
     @Test
     void shouldThrowWhenGameIsWon(){
@@ -89,7 +89,7 @@ class BasicGameManagerIntegrationTest {
         assertThatThrownBy(() -> gameManager
                 .guessLetter(newGameId, 'Z'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining("GameIsAlreadyOverException");
+                .hasMessageContaining("Game is already over");
     }
 
 }
