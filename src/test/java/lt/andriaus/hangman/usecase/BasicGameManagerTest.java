@@ -1,5 +1,6 @@
 package lt.andriaus.hangman.usecase;
 
+import lt.andriaus.hangman.database.Database;
 import lt.andriaus.hangman.domain.Game;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,9 @@ class BasicGameManagerTest {
     @Mock
     Game game;
     @Mock
-    RamDatabase<String> wordDB;
+    Database<String> wordDB;
     @Mock
-    RamDatabase<Game> gameDB;
+    Database<Game> gameDB;
 
 
     @BeforeEach
@@ -56,7 +57,6 @@ class BasicGameManagerTest {
 
     @Test
     void shouldNotLoadGame() {
-        when(gameDB.loadOne(1)).thenReturn(Optional.empty());
         Optional<Game> notExistingGame = basicGameManager.loadGame(1);
         assertThat(notExistingGame).isEmpty();
     }
