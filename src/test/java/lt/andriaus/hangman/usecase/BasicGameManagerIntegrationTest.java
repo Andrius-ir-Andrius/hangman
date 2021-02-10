@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -19,7 +21,7 @@ class BasicGameManagerIntegrationTest {
 
 
     @BeforeAll
-    static void setup(){
+    static void setup() {
         Database<String> wordDB = new RamDatabase<>();
         wordDB.save("Adele");
         Database<Game> gameDB = new RamDatabase<>();
@@ -41,19 +43,19 @@ class BasicGameManagerIntegrationTest {
     }
 
     @Test
-    void shouldGetEmptyOptionalGame(){
+    void shouldGetEmptyOptionalGame() {
         Optional<Game> emptyGame = gameManager.loadGame(-1);
         assertThat(emptyGame).isEmpty();
     }
 
     @Test
-    void shouldFailAtGuessing(){
+    void shouldFailAtGuessing() {
         Optional<Game> gameAfterGuess = gameManager.guessLetter(-1, 'C');
         assertThat(gameAfterGuess).isEmpty();
     }
 
     @Test
-    void shouldAddLettersAfterGuessing(){
+    void shouldAddLettersAfterGuessing() {
         int newGameId = gameManager.createGame();
         gameManager.guessLetter(newGameId, 'E');
         Optional<Game> gameAfterGuesses = gameManager.guessLetter(newGameId, 'B');
@@ -63,7 +65,7 @@ class BasicGameManagerIntegrationTest {
 
 
     @Test
-    void shouldThrowWrongSymbolException(){
+    void shouldThrowWrongSymbolException() {
         int newGameId = gameManager.createGame();
         assertThatThrownBy(() -> gameManager
                 .guessLetter(newGameId, '5'))
@@ -72,7 +74,7 @@ class BasicGameManagerIntegrationTest {
     }
 
     @Test
-    void shouldThrowWhenGameIsLost(){
+    void shouldThrowWhenGameIsLost() {
         int newGameId = gameManager.createGame();
         List.of('b', 'c', 'f', 'g', 'i', 'j', 'k', 'm', 'n', 'p')
                 .forEach(guess -> gameManager.guessLetter(newGameId, guess));
@@ -81,8 +83,9 @@ class BasicGameManagerIntegrationTest {
                 .isInstanceOf(GameException.class)
                 .hasMessageContaining("Game is already over");
     }
+
     @Test
-    void shouldThrowWhenGameIsWon(){
+    void shouldThrowWhenGameIsWon() {
         int newGameId = gameManager.createGame();
         List.of('a', 'd', 'e', 'l')
                 .forEach(guess -> gameManager.guessLetter(newGameId, guess));

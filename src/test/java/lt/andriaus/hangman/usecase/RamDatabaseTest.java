@@ -61,13 +61,13 @@ public class RamDatabaseTest {
     }
 
     @Test
-    void shouldRetrieveNothing(){
+    void shouldRetrieveNothing() {
         Optional<String> wordFromDB = database.loadRandom();
         assertThat(wordFromDB).isEmpty();
     }
 
     @Test
-    void shouldRetrieveSingleExistingItem(){
+    void shouldRetrieveSingleExistingItem() {
         database.save("test");
         Optional<String> retrieved = database.loadRandom();
         assertThat(retrieved).isPresent().hasValue("test");

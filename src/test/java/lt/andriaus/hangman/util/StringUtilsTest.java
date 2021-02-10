@@ -3,7 +3,6 @@ package lt.andriaus.hangman.util;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,15 +31,5 @@ class StringUtilsTest {
         assertThat(wordList.get(0)).isEqualTo(wordString.charAt(0));
         assertThat(wordList.get(1)).isEqualTo(wordString.charAt(1));
         assertThat(wordList.size()).isEqualTo(wordString.length());
-    }
-
-    @Test
-    void shouldReturnString() {
-        Set<Character> wordSet = new HashSet<>(List.of('a', 'b', 'c', 'd'));
-        String setString = Utils.CharSetToString(wordSet);
-        for(int i = 0; i < setString.length(); i++){
-            assertThat(wordSet.contains(setString.charAt(i))).isTrue();
-        }
-        assertThat(setString.length()).isEqualTo(wordSet.size());
     }
 }

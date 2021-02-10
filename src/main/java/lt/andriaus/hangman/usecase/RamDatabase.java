@@ -33,7 +33,7 @@ public class RamDatabase<E> implements Database<E> {
 
     @Override
     public Optional<E> loadRandom() {
-        if(atomicId.get() == 0)
+        if (atomicId.get() == 0)
             return Optional.empty();
         int randomId = new Random().nextInt(elementsById.size());
         return Optional.of(elementsById.get(randomId));
