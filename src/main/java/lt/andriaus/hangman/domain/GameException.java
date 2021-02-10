@@ -11,7 +11,7 @@ public class GameException extends RuntimeException {
     }
 
     public static GameException symbolIsNotAlphabeticException(char letter) {
-        return new GameException(String.format("Symbol %s is not alphabetic", letter));
+        return new GameException(String.format("Symbol [%s] is not alphabetic", letter));
     }
 
 }
