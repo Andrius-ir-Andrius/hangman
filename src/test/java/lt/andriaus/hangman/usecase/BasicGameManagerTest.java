@@ -51,7 +51,6 @@ class BasicGameManagerTest {
         when(game.getWord()).thenReturn("HELLO");
         when(gameDB.loadOne(0)).thenReturn(Optional.of(game));
         Optional<Game> existingGame = basicGameManager.loadGame(0);
-        assertThat(existingGame).isPresent();
         assertThat(existingGame.map(Game::getWord)).hasValue("HELLO");
     }
 

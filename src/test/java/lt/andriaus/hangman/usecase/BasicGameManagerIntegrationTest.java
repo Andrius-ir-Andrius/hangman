@@ -39,8 +39,7 @@ class BasicGameManagerIntegrationTest {
     void shouldCreateAndLoadGame() {
         int newGameId = gameManager.createGame();
         Optional<Game> newGame = gameManager.loadGame(newGameId);
-        assertThat(newGame).isPresent();
-        assertThat(newGame.get().getWord()).isEqualTo("ADELE");
+        assertThat(newGame.map(Game::getWord)).hasValue("ADELE");
     }
 
     @Test
@@ -60,7 +59,6 @@ class BasicGameManagerIntegrationTest {
         int newGameId = gameManager.createGame();
         gameManager.guessLetter(newGameId, 'E');
         Optional<Game> gameAfterGuesses = gameManager.guessLetter(newGameId, 'B');
-        assertThat(gameAfterGuesses).isPresent();
         assertThat(gameAfterGuesses.map(Game::getGuessedLetters).map(Set::size)).hasValue(2);
     }
 
