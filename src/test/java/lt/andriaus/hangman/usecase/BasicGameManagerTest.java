@@ -1,6 +1,6 @@
 package lt.andriaus.hangman.usecase;
 
-import lt.andriaus.hangman.database.Database;
+import lt.andriaus.hangman.gateway.api.Database;
 import lt.andriaus.hangman.domain.Game;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

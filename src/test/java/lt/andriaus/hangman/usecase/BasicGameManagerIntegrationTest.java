@@ -1,9 +1,9 @@
 package lt.andriaus.hangman.usecase;
 
-import lt.andriaus.hangman.database.Database;
+import lt.andriaus.hangman.gateway.api.Database;
 import lt.andriaus.hangman.domain.Game;
 import lt.andriaus.hangman.domain.GameException;
-import lt.andriaus.hangman.gateway.RamDatabase;
+import lt.andriaus.hangman.gateway.implementation.inmemory.InMemoryDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,9 +23,9 @@ class BasicGameManagerIntegrationTest {
 
     @BeforeAll
     static void setup() {
-        Database<String> wordDB = new RamDatabase<>();
+        Database<String> wordDB = new InMemoryDatabase<>();
         wordDB.save("Adele");
-        Database<Game> gameDB = new RamDatabase<>();
+        Database<Game> gameDB = new InMemoryDatabase<>();
         gameManager = new BasicGameManager(wordDB, gameDB);
     }
 

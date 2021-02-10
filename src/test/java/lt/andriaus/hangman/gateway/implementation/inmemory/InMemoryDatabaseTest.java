@@ -1,6 +1,6 @@
-package lt.andriaus.hangman.gateway;
+package lt.andriaus.hangman.gateway.implementation.inmemory;
 
-import lt.andriaus.hangman.database.Database;
+import lt.andriaus.hangman.gateway.api.Database;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,13 +15,13 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class RamDatabaseTest {
+public class InMemoryDatabaseTest {
     private final List<String> DATA = Arrays.asList("ABC", "DEF", "GHI");
     Database<String> database;
 
     @BeforeEach
     void prepare() {
-        database = new RamDatabase<>();
+        database = new InMemoryDatabase<>();
     }
 
     @Test
