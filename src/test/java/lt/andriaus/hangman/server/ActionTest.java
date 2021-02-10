@@ -35,19 +35,19 @@ class ActionTest {
     @Test
     void shouldCreateGame() {
 
-        when(gameManager.createGame()).thenReturn(0);
-        int id = action.createGame();
-        assertThat(id).isEqualTo(0);
+        when(gameManager.createGame()).thenReturn(Optional.of(0));
+        Optional<Integer> id = action.createGame();
+        assertThat(id).isPresent().hasValue(0);
 
     }
 
     @Test
     void shouldLoadGame() {
 
-        when(gameManager.createGame()).thenReturn(0);
+        when(gameManager.createGame()).thenReturn(Optional.of(0));
         when(gameManager.loadGame(0)).thenReturn(optionalGame);
-        int id = action.createGame();
-        Request request = new RequestStub(Map.of("id", id + ""));
+        Optional<Integer> id = action.createGame();
+        Request request = new RequestStub(Map.of("id", id.orElse(-1) + ""));
         Optional<Game> game = action.loadGame(request);
         assertThat(game).isPresent();
 
@@ -66,10 +66,15 @@ class ActionTest {
 
     @Test
     void shouldGuessLetter() {
-        when(gameManager.createGame()).thenReturn(0);
+        when(gameManager.createGame()).thenReturn(Optional.of(0));
         when(gameManager.guessLetter(0, 'a')).thenReturn(optionalGame);
-        int id = action.createGame();
-        Request request = new RequestStub(String.format("{\"id\":\"%s\", \"letter\":\"%s\"}", id, "a"));
+        Optional<Integer> id = action.createGame();
+        Request request = new RequestStub(
+                String.format(
+                        "{\"id\":\"%s\", \"letter\":\"%s\"}",
+                        id.orElse(-1),
+                        "a")
+        );
         Optional<Game> game = action.guessLetter(request);
         assertThat(game).isPresent();
     }

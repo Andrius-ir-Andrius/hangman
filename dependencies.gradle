@@ -7,6 +7,7 @@ ext {
             spark       : '2.9.1',
             jackson     : '2.11.0',
             unirest     : '1.4.9',
+            sparktest   : '1.1.8',
     ]
     //noinspection GroovyAssignabilityCheck
     dependencies = [
@@ -26,5 +27,6 @@ ext {
             unirest          : "com.mashape.unirest:unirest-java:$versions.unirest",
             json_unit        : ["net.javacrumbs.json-unit:json-unit:$versions.json_unit",
                                 "net.javacrumbs.json-unit:json-unit-fluent:$versions.json_unit"],
+            sparktest        : "com.despegar:spark-test:$versions.sparktest",
     ]
 }

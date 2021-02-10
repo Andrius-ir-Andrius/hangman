@@ -28,14 +28,15 @@ class BasicGameManagerIntegrationTest {
 
     @Test
     void shouldCreateGame() {
-        int newGameId = gameManager.createGame();
-        assertThat(newGameId).isGreaterThan(-1);
+        Optional<Integer> newGameId = gameManager.createGame();
+        assertThat(newGameId).isPresent();
+        assertThat(newGameId.get()).isGreaterThan(-1);
     }
 
     @Test
     void shouldCreateAndLoadGame() {
-        int newGameId = gameManager.createGame();
-        Optional<Game> newGame = gameManager.loadGame(newGameId);
+        Optional<Integer> newGameId = gameManager.createGame();
+        Optional<Game> newGame = gameManager.loadGame(newGameId.orElse(-1));
         assertThat(newGame).isPresent();
         assertThat(newGame.get().getWord()).isEqualTo("ADELE");
     }
@@ -54,9 +55,9 @@ class BasicGameManagerIntegrationTest {
 
     @Test
     void shouldAddLettersAfterGuessing(){
-        int newGameId = gameManager.createGame();
-        gameManager.guessLetter(newGameId, 'E');
-        Optional<Game> gameAfterGuesses = gameManager.guessLetter(newGameId, 'B');
+        Optional<Integer> newGameId = gameManager.createGame();
+        gameManager.guessLetter(newGameId.orElse(-1), 'E');
+        Optional<Game> gameAfterGuesses = gameManager.guessLetter(newGameId.orElse(-1), 'B');
         assertThat(gameAfterGuesses).isPresent();
         assertThat(gameAfterGuesses.map(Game::getGuessedLetters).map(Set::size)).hasValue(2);
     }
@@ -64,30 +65,30 @@ class BasicGameManagerIntegrationTest {
 
     @Test
     void shouldThrowWrongSymbolException(){
-        int newGameId = gameManager.createGame();
+        Optional<Integer> newGameId = gameManager.createGame();
         assertThatThrownBy(() -> gameManager
-                .guessLetter(newGameId, '5'))
+                .guessLetter(newGameId.orElse(-1), '5'))
                 .isInstanceOf(GameException.class)
                 .hasMessageContaining("Symbol 5 is not alphabetic");
     }
 
     @Test
     void shouldThrowWhenGameIsLost(){
-        int newGameId = gameManager.createGame();
+        Optional<Integer> newGameId = gameManager.createGame();
         List.of('b', 'c', 'f', 'g', 'i', 'j', 'k', 'm', 'n', 'p')
-                .forEach(guess -> gameManager.guessLetter(newGameId, guess));
+                .forEach(guess -> gameManager.guessLetter(newGameId.orElse(-1), guess));
         assertThatThrownBy(() -> gameManager
-                .guessLetter(newGameId, 'R'))
+                .guessLetter(newGameId.orElse(-1), 'R'))
                 .isInstanceOf(GameException.class)
                 .hasMessageContaining("Game is already over");
     }
     @Test
     void shouldThrowWhenGameIsWon(){
-        int newGameId = gameManager.createGame();
+        Optional<Integer> newGameId = gameManager.createGame();
         List.of('a', 'd', 'e', 'l')
-                .forEach(guess -> gameManager.guessLetter(newGameId, guess));
+                .forEach(guess -> gameManager.guessLetter(newGameId.orElse(-1), guess));
         assertThatThrownBy(() -> gameManager
-                .guessLetter(newGameId, 'Z'))
+                .guessLetter(newGameId.orElse(-1), 'Z'))
                 .isInstanceOf(GameException.class)
                 .hasMessageContaining("Game is already over");
     }

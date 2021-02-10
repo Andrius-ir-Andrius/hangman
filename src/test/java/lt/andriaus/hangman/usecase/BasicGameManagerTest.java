@@ -42,8 +42,8 @@ class BasicGameManagerTest {
     void shouldCreateGame() {
         String word = "HELLO";
         when(wordDB.loadRandom()).thenReturn(Optional.of(word));
-        int newGameId = basicGameManager.createGame();
-        assertThat(newGameId).isEqualTo(0);
+        Optional<Integer> newGameId = basicGameManager.createGame();
+        assertThat(newGameId).isPresent().hasValue(0);
     }
 
     @Test

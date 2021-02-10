@@ -21,7 +21,7 @@ public class Action {
         this.gameManager = gameManager;
     }
 
-    public int createGame() {
+    public Optional<Integer> createGame() {
         return gameManager.createGame();
     }
 
