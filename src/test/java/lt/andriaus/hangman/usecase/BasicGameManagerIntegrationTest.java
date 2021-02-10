@@ -3,6 +3,7 @@ package lt.andriaus.hangman.usecase;
 import lt.andriaus.hangman.database.Database;
 import lt.andriaus.hangman.domain.Game;
 import lt.andriaus.hangman.domain.GameException;
+import lt.andriaus.hangman.gateway.RamDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

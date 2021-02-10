@@ -1,4 +1,4 @@
-package lt.andriaus.hangman.usecase;
+package lt.andriaus.hangman.gateway;
 
 import lt.andriaus.hangman.database.Database;
 
