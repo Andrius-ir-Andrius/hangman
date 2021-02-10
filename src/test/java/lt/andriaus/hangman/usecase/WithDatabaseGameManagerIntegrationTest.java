@@ -1,6 +1,5 @@
 package lt.andriaus.hangman.usecase;
 
-import lt.andriaus.hangman.database.Database;
 import lt.andriaus.hangman.domain.Game;
 import lt.andriaus.hangman.domain.GameException;
 import lt.andriaus.hangman.gateway.api.Database;
@@ -71,7 +70,7 @@ class WithDatabaseGameManagerIntegrationTest {
         assertThatThrownBy(() -> gameManager
                 .guessLetter(newGameId.orElse(-1), '5'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining("Symbol 5 is not alphabetic");
+                .hasMessageContaining("Symbol [5] is not alphabetic");
     }
 
     @Test

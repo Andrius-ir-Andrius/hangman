@@ -97,14 +97,14 @@ class ActionTest {
 
         assertThatThrownBy(() -> action.guessLetter(wrongLetterRequest))
                 .isInstanceOf(GameException.class)
-                .hasMessage("Symbol 5 is not alphabetic");
+                .hasMessage("Symbol [5] is not alphabetic");
 
         assertThatThrownBy(() -> action.guessLetter(stringLetterRequest))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("A single character was expected, <labs> was given");
+                .hasMessage("A single character was expected, [labs] was given");
 
         assertThatThrownBy(() -> action.guessLetter(stringIdRequest))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("Integer was expected, <a> was given");
+                .hasMessage("Integer was expected, [a] was given");
     }
 }

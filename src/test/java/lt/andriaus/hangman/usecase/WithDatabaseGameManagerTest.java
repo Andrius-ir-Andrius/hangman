@@ -42,7 +42,7 @@ class WithDatabaseGameManagerTest {
     void shouldCreateGame() {
         String word = "HELLO";
         when(wordDB.loadRandom()).thenReturn(Optional.of(word));
-        Optional<Integer> newGameId = basicGameManager.createGame();
+        Optional<Integer> newGameId = withDatabaseGameManager.createGame();
         assertThat(newGameId).isPresent().hasValue(0);
     }
 

@@ -2,11 +2,11 @@ package lt.andriaus.hangman.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lt.andriaus.hangman.database.Database;
 import lt.andriaus.hangman.domain.Game;
-import lt.andriaus.hangman.usecase.BasicGameManager;
+import lt.andriaus.hangman.gateway.api.Database;
+import lt.andriaus.hangman.gateway.implementation.inmemory.InMemoryDatabase;
 import lt.andriaus.hangman.usecase.GameManager;
-import lt.andriaus.hangman.usecase.RamDatabase;
+import lt.andriaus.hangman.usecase.WithDatabaseGameManager;
 import lt.andriaus.hangman.util.JSONGame;
 import spark.Request;
 
@@ -29,9 +29,9 @@ public class Server {
     }
 
     static void init() {
-        Database<String> wordDB = new RamDatabase<>();
-        Database<Game> gameDB = new RamDatabase<>();
-        GameManager gameManager = new BasicGameManager(wordDB, gameDB);
+        Database<String> wordDB = new InMemoryDatabase<>();
+        Database<Game> gameDB = new InMemoryDatabase<>();
+        GameManager gameManager = new WithDatabaseGameManager(wordDB, gameDB);
         wordDB.save("best");
         wordDB.save("test");
         action = new Action(gameManager);
