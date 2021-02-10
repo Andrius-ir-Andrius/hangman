@@ -3,27 +3,31 @@ package lt.andriaus.hangman.usecase;
 import lt.andriaus.hangman.database.Database;
 import lt.andriaus.hangman.domain.Game;
 import lt.andriaus.hangman.domain.GameException;
+import lt.andriaus.hangman.gateway.api.Database;
+import lt.andriaus.hangman.gateway.implementation.inmemory.InMemoryDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
-class BasicGameManagerIntegrationTest {
+class WithDatabaseGameManagerIntegrationTest {
     private static GameManager gameManager;
 
 
     @BeforeAll
-    static void setup(){
-        Database<String> wordDB = new RamDatabase<>();
+    static void setup() {
+        Database<String> wordDB = new InMemoryDatabase<>();
         wordDB.save("Adele");
-        Database<Game> gameDB = new RamDatabase<>();
-        gameManager = new BasicGameManager(wordDB, gameDB);
+        Database<Game> gameDB = new InMemoryDatabase<>();
+        gameManager = new WithDatabaseGameManager(wordDB, gameDB);
     }
 
     @Test
@@ -37,18 +41,17 @@ class BasicGameManagerIntegrationTest {
     void shouldCreateAndLoadGame() {
         Optional<Integer> newGameId = gameManager.createGame();
         Optional<Game> newGame = gameManager.loadGame(newGameId.orElse(-1));
-        assertThat(newGame).isPresent();
-        assertThat(newGame.get().getWord()).isEqualTo("ADELE");
+        assertThat(newGame.map(Game::getWord)).hasValue("ADELE");
     }
 
     @Test
-    void shouldGetEmptyOptionalGame(){
+    void shouldGetEmptyOptionalGame() {
         Optional<Game> emptyGame = gameManager.loadGame(-1);
         assertThat(emptyGame).isEmpty();
     }
 
     @Test
-    void shouldFailAtGuessing(){
+    void shouldFailAtGuessing() {
         Optional<Game> gameAfterGuess = gameManager.guessLetter(-1, 'C');
         assertThat(gameAfterGuess).isEmpty();
     }
@@ -58,7 +61,6 @@ class BasicGameManagerIntegrationTest {
         Optional<Integer> newGameId = gameManager.createGame();
         gameManager.guessLetter(newGameId.orElse(-1), 'E');
         Optional<Game> gameAfterGuesses = gameManager.guessLetter(newGameId.orElse(-1), 'B');
-        assertThat(gameAfterGuesses).isPresent();
         assertThat(gameAfterGuesses.map(Game::getGuessedLetters).map(Set::size)).hasValue(2);
     }
 
@@ -82,6 +84,7 @@ class BasicGameManagerIntegrationTest {
                 .isInstanceOf(GameException.class)
                 .hasMessageContaining("Game is already over");
     }
+
     @Test
     void shouldThrowWhenGameIsWon(){
         Optional<Integer> newGameId = gameManager.createGame();

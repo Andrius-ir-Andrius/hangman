@@ -1,6 +1,6 @@
-package lt.andriaus.hangman.usecase;
+package lt.andriaus.hangman.gateway.implementation.inmemory;
 
-import lt.andriaus.hangman.database.Database;
+import lt.andriaus.hangman.gateway.api.Database;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,13 +15,13 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class RamDatabaseTest {
+public class InMemoryDatabaseTest {
     private final List<String> DATA = Arrays.asList("ABC", "DEF", "GHI");
     Database<String> database;
 
     @BeforeEach
     void prepare() {
-        database = new RamDatabase<>();
+        database = new InMemoryDatabase<>();
     }
 
     @Test
@@ -61,29 +61,16 @@ public class RamDatabaseTest {
     }
 
     @Test
-    void shouldNotRetrieveRandom(){
+    void shouldRetrieveNothing() {
         Optional<String> wordFromDB = database.loadRandom();
         assertThat(wordFromDB).isEmpty();
     }
 
     @Test
-    void shouldRetrieveRandom(){
-        database.save("best");
+    void shouldRetrieveSingleExistingItem() {
         database.save("test");
-        boolean isBestSeen = false;
-        boolean isTestSeen = false;
-        int counter = 0;
-        while (counter++ < 100 && (!isTestSeen || !isBestSeen)){
-            Optional<String> optionalWord = database.loadRandom();
-            if(optionalWord.isEmpty())
-                break;
-            if(optionalWord.get().equals("best"))
-                isBestSeen = true;
-            if(optionalWord.get().equals("test"))
-                isTestSeen = true;
-        }
-        assertThat(isBestSeen).isTrue();
-        assertThat(isTestSeen).isTrue();
+        Optional<String> retrieved = database.loadRandom();
+        assertThat(retrieved).isPresent().hasValue("test");
     }
 
 }

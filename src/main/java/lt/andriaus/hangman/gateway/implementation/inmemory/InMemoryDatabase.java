@@ -1,6 +1,6 @@
-package lt.andriaus.hangman.usecase;
+package lt.andriaus.hangman.gateway.implementation.inmemory;
 
-import lt.andriaus.hangman.database.Database;
+import lt.andriaus.hangman.gateway.api.Database;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +10,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Collections.unmodifiableMap;
 
-public class RamDatabase<E> implements Database<E> {
+public class InMemoryDatabase<E> implements Database<E> {
     private final Map<Integer, E> elementsById;
     private final AtomicInteger atomicId;
 
-    public RamDatabase() {
+    public InMemoryDatabase() {
         this.elementsById = new HashMap<>();
         atomicId = new AtomicInteger();
     }
@@ -33,7 +33,7 @@ public class RamDatabase<E> implements Database<E> {
 
     @Override
     public Optional<E> loadRandom() {
-        if(atomicId.get() == 0)
+        if (atomicId.get() == 0)
             return Optional.empty();
         int randomId = new Random().nextInt(elementsById.size());
         return Optional.of(elementsById.get(randomId));

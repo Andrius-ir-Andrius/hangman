@@ -36,14 +36,4 @@ class StringUtilsTest {
         assertThat(wordList.get(1)).isEqualTo(wordString.charAt(1));
         assertThat(wordList.size()).isEqualTo(wordString.length());
     }
-
-    @Test
-    void shouldReturnString() {
-        Set<Character> wordSet = new HashSet<>(List.of('a', 'b', 'c', 'd'));
-        String setString = StringUtils.CharSetToString(wordSet);
-        for(int i = 0; i < setString.length(); i++){
-            assertThat(wordSet.contains(setString.charAt(i))).isTrue();
-        }
-        assertThat(setString.length()).isEqualTo(wordSet.size());
-    }
 }

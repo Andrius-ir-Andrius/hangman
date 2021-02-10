@@ -1,4 +1,4 @@
-package lt.andriaus.hangman.database;
+package lt.andriaus.hangman.gateway.api;
 
 import java.util.Map;
 import java.util.Optional;

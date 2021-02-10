@@ -1,22 +1,22 @@
 package lt.andriaus.hangman.usecase;
 
-import lt.andriaus.hangman.database.Database;
 import lt.andriaus.hangman.domain.Game;
+import lt.andriaus.hangman.gateway.api.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BasicGameManagerTest {
-    BasicGameManager basicGameManager;
+class WithDatabaseGameManagerTest {
+    WithDatabaseGameManager withDatabaseGameManager;
     @Mock
     Game game;
     @Mock
@@ -27,13 +27,13 @@ class BasicGameManagerTest {
 
     @BeforeEach
     void setup() {
-        basicGameManager = new BasicGameManager(wordDB, gameDB);
+        withDatabaseGameManager = new WithDatabaseGameManager(wordDB, gameDB);
     }
 
     @Test
     void shouldNotCreateGame() {
         when(wordDB.loadRandom()).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> basicGameManager.createGame())
+        assertThatThrownBy(() -> withDatabaseGameManager.createGame())
                 .isInstanceOf(GameManagerException.class)
                 .hasMessageContaining("Failed to create Game");
     }
@@ -50,14 +50,13 @@ class BasicGameManagerTest {
     void shouldLoadGame() {
         when(game.getWord()).thenReturn("HELLO");
         when(gameDB.loadOne(0)).thenReturn(Optional.of(game));
-        Optional<Game> existingGame = basicGameManager.loadGame(0);
-        assertThat(existingGame).isPresent();
+        Optional<Game> existingGame = withDatabaseGameManager.loadGame(0);
         assertThat(existingGame.map(Game::getWord)).hasValue("HELLO");
     }
 
     @Test
     void shouldNotLoadGame() {
-        Optional<Game> notExistingGame = basicGameManager.loadGame(1);
+        Optional<Game> notExistingGame = withDatabaseGameManager.loadGame(1);
         assertThat(notExistingGame).isEmpty();
     }
 }
