@@ -1,15 +1,15 @@
 package lt.andriaus.hangman.usecase;
 
-import lt.andriaus.hangman.gateway.api.Database;
 import lt.andriaus.hangman.domain.Game;
+import lt.andriaus.hangman.gateway.api.Database;
 
-import java.util.*;
+import java.util.Optional;
 
-public class BasicGameManager implements GameManager {
+public class WithDatabaseGameManager implements GameManager {
     private final Database<String> wordDB;
     private final Database<Game> gameDB;
 
-    public BasicGameManager(Database<String> wordDB, Database<Game> gameDB) {
+    public WithDatabaseGameManager(Database<String> wordDB, Database<Game> gameDB) {
         this.wordDB = wordDB;
         this.gameDB = gameDB;
     }

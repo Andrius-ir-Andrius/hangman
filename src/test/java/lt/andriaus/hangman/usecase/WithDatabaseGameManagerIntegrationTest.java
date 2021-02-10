@@ -1,8 +1,8 @@
 package lt.andriaus.hangman.usecase;
 
-import lt.andriaus.hangman.gateway.api.Database;
 import lt.andriaus.hangman.domain.Game;
 import lt.andriaus.hangman.domain.GameException;
+import lt.andriaus.hangman.gateway.api.Database;
 import lt.andriaus.hangman.gateway.implementation.inmemory.InMemoryDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
-class BasicGameManagerIntegrationTest {
+class WithDatabaseGameManagerIntegrationTest {
     private static GameManager gameManager;
 
 
@@ -26,7 +26,7 @@ class BasicGameManagerIntegrationTest {
         Database<String> wordDB = new InMemoryDatabase<>();
         wordDB.save("Adele");
         Database<Game> gameDB = new InMemoryDatabase<>();
-        gameManager = new BasicGameManager(wordDB, gameDB);
+        gameManager = new WithDatabaseGameManager(wordDB, gameDB);
     }
 
     @Test
