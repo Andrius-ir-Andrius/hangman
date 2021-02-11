@@ -49,7 +49,7 @@ public class Action {
         return gameManager.guessLetter(id, character);
     }
 
-    private static class RequestBody {
+    public static class RequestBody {
         private final int id;
         private final String letters;
 

@@ -20,9 +20,10 @@ public class Server {
 
     public static void main(String[] args) {
         init();
+        get("/", (req, res) -> "Hello World");
         post("/game", (req, res) -> process(req, res, () -> {
             res.status(201);
-            return  action.createGame();
+            return action.createGame();
         }));
         get("/game", (req, res) -> process(req, res, () -> action.loadGame(req).map(JSONGame::new)));
         put("/game", (req, res) -> process(req, res, () -> action.guessLetter(req).map(JSONGame::new)));
