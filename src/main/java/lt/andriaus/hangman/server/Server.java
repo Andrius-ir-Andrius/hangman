@@ -20,7 +20,9 @@ public class Server {
 
     public static void main(String[] args) {
         init();
-        get("/", (req, res) -> "Hello World");
+        String websiteUrl = "";
+        String corsPattern = String.format("https?:\\/\\/:(localhost|%s).+", websiteUrl);
+        before((req, res) -> res.header("Access-Control-Allow-Origin", corsPattern));
         post("/game", (req, res) -> process(req, res, () -> {
             res.status(201);
             return action.createGame();
