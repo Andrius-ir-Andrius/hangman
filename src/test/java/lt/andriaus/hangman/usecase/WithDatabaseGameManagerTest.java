@@ -32,7 +32,6 @@ class WithDatabaseGameManagerTest {
 
     @Test
     void shouldNotCreateGame() {
-        when(wordDB.loadRandom()).thenReturn(Optional.empty());
         assertThatThrownBy(() -> withDatabaseGameManager.createGame())
                 .isInstanceOf(GameManagerException.class)
                 .hasMessageContaining("Failed to create Game");
