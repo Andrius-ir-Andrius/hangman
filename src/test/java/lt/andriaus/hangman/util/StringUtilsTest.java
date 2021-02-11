@@ -30,6 +30,6 @@ class StringUtilsTest {
 
         assertThat(wordList.get(0)).isEqualTo(wordString.charAt(0));
         assertThat(wordList.get(1)).isEqualTo(wordString.charAt(1));
-        assertThat(wordList.size()).isEqualTo(wordString.length());
+        assertThat(wordList).hasSize(wordString.length());
     }
 }
