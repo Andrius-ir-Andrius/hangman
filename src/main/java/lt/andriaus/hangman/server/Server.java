@@ -8,6 +8,7 @@ import lt.andriaus.hangman.gateway.implementation.inmemory.InMemoryDatabase;
 import lt.andriaus.hangman.usecase.GameManager;
 import lt.andriaus.hangman.usecase.WithDatabaseGameManager;
 import lt.andriaus.hangman.util.JSONGame;
+import lt.andriaus.hangman.util.StringUtils;
 import spark.Request;
 
 import java.util.Optional;
@@ -28,7 +29,9 @@ public class Server {
             return action.createGame();
         }));
         get("/game", (req, res) -> process(req, res, () -> action.loadGame(req).map(JSONGame::new)));
-        put("/game", (req, res) -> process(req, res, () -> action.guessLetter(req).map(JSONGame::new)));
+        put("/game", (req, res) -> process(req, res, () ->
+                action.guessLetter(req).map(JSONGame::new))
+        );
     }
 
     static void init() {
@@ -59,7 +62,25 @@ public class Server {
 
     private static String resultNotFound(Request req, spark.Response res) {
         res.status(404);
-        return "Result not found for request: " + req.queryString();
+        return "Result not found for request: id=" + getIdFromQueryAndBody(req);
+    }
+
+    private static String getIdFromQueryAndBody(Request req) {
+        String regexForQuery = "(^|&)id=(-?\\d+)";
+        String regexForBody = "\"id\":\\s*\"(-?\\d+)\"";
+        Optional<String> idFromQuery;
+        try {
+            idFromQuery = Optional.of(StringUtils.getRegexGroups(regexForQuery, req.queryString()).get(2));
+        } catch (Exception e) {
+            idFromQuery = Optional.empty();
+        }
+        Optional<String> idFromBody;
+        try {
+            idFromBody = Optional.of(StringUtils.getRegexGroups(regexForBody, req.body()).get(1));
+        } catch (Exception e) {
+            idFromBody = Optional.empty();
+        }
+        return idFromQuery.orElse(idFromBody.orElse(""));
     }
 
     private static <T> String convertToJson(T result) {

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,7 +13,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 public class ServerTest {
@@ -37,7 +35,12 @@ public class ServerTest {
     }
 
     String getContentsFromConnectionStream(HttpURLConnection connection) throws IOException {
-        InputStream inputStream = connection.getInputStream();
+        InputStream inputStream;
+        try {
+            inputStream = connection.getInputStream();
+        } catch (Exception e) {
+            inputStream = connection.getErrorStream();
+        }
         StringBuilder respDataBuf = new StringBuilder();
         respDataBuf.setLength(0);
         int b;
@@ -45,6 +48,7 @@ public class ServerTest {
             respDataBuf.append((char) b);
         }
         return respDataBuf.toString();
+
     }
 
     String getUrlContents(String url, String method, String requestBody) throws IOException {
@@ -52,13 +56,6 @@ public class ServerTest {
         if (!requestBody.equals(""))
             setRequestBody(connection, requestBody);
         return getContentsFromConnectionStream(connection);
-    }
-
-    @Test
-    void aa() throws IOException {
-        URL url = new URL("http://localhost:4567");
-        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-        assertThat(urlConn.getResponseCode()).isEqualTo(HttpURLConnection.HTTP_OK);
     }
 
     @Test
@@ -78,9 +75,12 @@ public class ServerTest {
     }
 
     @Test
-    void shouldNotLoadGame() {
-        assertThatThrownBy(() -> getUrlContents("http://localhost:4567/game?id=-1", "GET", ""))
-                .isInstanceOf(FileNotFoundException.class);
+    void shouldNotLoadGame() throws IOException {
+        assertThat(getUrlContents(
+                "http://localhost:4567/game?id=-1",
+                "GET",
+                "")
+        ).isEqualTo("Result not found for request: id=-1");
     }
 
     @Test
@@ -96,23 +96,21 @@ public class ServerTest {
     void shouldNotGuessNonAlphabeticSymbol() throws IOException {
         String id = getUrlContents("http://localhost:4567/game", "POST", "");
         String payload = String.format("{\"id\":\"%s\", \"letter\":\"%s\"}", id, "5");
-        assertThatThrownBy(() -> getUrlContents(
+        assertThat(getUrlContents(
                 "http://localhost:4567/game",
                 "PUT",
                 payload)
-        )
-                .isInstanceOf(IOException.class).hasMessageContaining("500 for URL");
+        ).isEqualTo("Symbol [5] is not alphabetic");
     }
 
 
     @Test
-    void shouldNotGuessInNonExistingGame() {
+    void shouldNotGuessInNonExistingGame() throws IOException {
         String payload = String.format("{\"id\":\"%s\", \"letter\":\"%s\"}", "-1", "a");
-        assertThatThrownBy(() -> getUrlContents(
+        assertThat(getUrlContents(
                 "http://localhost:4567/game",
                 "PUT",
                 payload)
-        )
-                .isInstanceOf(IOException.class);
+        ).isEqualTo("Result not found for request: id=-1");
     }
 }
