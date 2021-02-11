@@ -8,7 +8,6 @@ import lt.andriaus.hangman.gateway.implementation.inmemory.InMemoryDatabase;
 import lt.andriaus.hangman.usecase.GameManager;
 import lt.andriaus.hangman.usecase.WithDatabaseGameManager;
 import lt.andriaus.hangman.util.JSONGame;
-import lt.andriaus.hangman.util.StringUtils;
 import spark.Request;
 
 import java.util.Optional;
@@ -66,21 +65,13 @@ public class Server {
     }
 
     private static String getIdFromQueryAndBody(Request req) {
-        String regexForQuery = "(^|&)id=(-?\\d+)";
-        String regexForBody = "\"id\":\\s*\"(-?\\d+)\"";
-        Optional<String> idFromQuery;
+        if (req.queryParams("id").length() > 0)
+            return req.queryParams("id");
         try {
-            idFromQuery = Optional.of(StringUtils.getRegexGroups(regexForQuery, req.queryString()).get(2));
+            return new ObjectMapper().readValue(req.body(), Action.RequestBody.class).getId() + "";
         } catch (Exception e) {
-            idFromQuery = Optional.empty();
+            return "";
         }
-        Optional<String> idFromBody;
-        try {
-            idFromBody = Optional.of(StringUtils.getRegexGroups(regexForBody, req.body()).get(1));
-        } catch (Exception e) {
-            idFromBody = Optional.empty();
-        }
-        return idFromQuery.orElse(idFromBody.orElse(""));
     }
 
     private static <T> String convertToJson(T result) {
