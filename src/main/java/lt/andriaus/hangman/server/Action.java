@@ -8,10 +8,9 @@ import lt.andriaus.hangman.usecase.GameManager;
 import spark.Request;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.lang.Integer.parseInt;
+import static lt.andriaus.hangman.util.StringUtils.getRegexGroups;
 
 public class Action {
 
@@ -35,9 +34,9 @@ public class Action {
             body = new ObjectMapper().readValue(request.body(), RequestBody.class);
         } catch (JsonProcessingException e) {
             if (e.getMessage().contains("`int` from String ")) {
-                Matcher matcher = Pattern.compile("from String \"(.+?)\":").matcher(e.getMessage());
-                if(matcher.find())
-                    throw ActionException.integerWasExpected(matcher.group(1));
+                throw ActionException.integerWasExpected(
+                        getRegexGroups("from String \"(.+?)\":", e.getMessage()).get(1)
+                );
             }
             throw new RuntimeException(e.getMessage());
         }

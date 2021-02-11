@@ -45,4 +45,19 @@ class StringUtilsTest {
         assertThat(receivedString).contains("c");
         assertThat(receivedString.length()).isEqualTo(3);
     }
+
+    @Test
+    void shouldFindRegexGroups() {
+        String regexPattern = "(([\\w\\s']+) ((\\d+)\\@(\\d+)))";
+        String stringToLookAt = "hello it's me 45@321";
+        List<String> groups = StringUtils.getRegexGroups(regexPattern, stringToLookAt);
+
+        assertThat(groups.size()).isEqualTo(6);
+        assertThat(groups.get(0)).isEqualTo(stringToLookAt);
+        assertThat(groups.get(1)).isEqualTo(stringToLookAt);
+        assertThat(groups.get(2)).isEqualTo("hello it's me");
+        assertThat(groups.get(3)).isEqualTo("45@321");
+        assertThat(groups.get(4)).isEqualTo("45");
+        assertThat(groups.get(5)).isEqualTo("321");
+    }
 }

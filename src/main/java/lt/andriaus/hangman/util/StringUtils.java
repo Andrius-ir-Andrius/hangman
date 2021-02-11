@@ -1,7 +1,10 @@
 package lt.andriaus.hangman.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class StringUtils {
@@ -22,5 +25,14 @@ public class StringUtils {
         return inputSet.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(""));
+    }
+
+    static public List<String> getRegexGroups(String regexPattern, String string) {
+        List<String> answer = new ArrayList<>();
+        Matcher matcher = Pattern.compile(regexPattern).matcher(string);
+        while (matcher.find())
+            for (int i = 0; i <= matcher.groupCount(); i++)
+                answer.add(matcher.group(i));
+        return answer;
     }
 }
