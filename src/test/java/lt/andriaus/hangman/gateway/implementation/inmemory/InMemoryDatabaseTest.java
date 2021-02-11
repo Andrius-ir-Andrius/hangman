@@ -70,7 +70,7 @@ public class InMemoryDatabaseTest {
     void shouldRetrieveSingleExistingItem() {
         database.save("test");
         Optional<String> retrieved = database.loadRandom();
-        assertThat(retrieved).isPresent().hasValue("test");
+        assertThat(retrieved).hasValue("test");
     }
 
 }
