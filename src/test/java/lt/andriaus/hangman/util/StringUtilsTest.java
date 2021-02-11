@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -35,5 +34,15 @@ class StringUtilsTest {
         assertThat(wordList.get(0)).isEqualTo(wordString.charAt(0));
         assertThat(wordList.get(1)).isEqualTo(wordString.charAt(1));
         assertThat(wordList.size()).isEqualTo(wordString.length());
+    }
+
+    @Test
+    void shouldReturnString() {
+        Set<Character> inputSet = Set.of('a', 'b', 'c');
+        String receivedString = StringUtils.charSetToString(inputSet);
+        assertThat(receivedString).contains("a");
+        assertThat(receivedString).contains("b");
+        assertThat(receivedString).contains("c");
+        assertThat(receivedString.length()).isEqualTo(3);
     }
 }
