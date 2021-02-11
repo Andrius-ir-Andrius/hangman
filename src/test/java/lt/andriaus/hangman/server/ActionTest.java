@@ -37,7 +37,7 @@ class ActionTest {
 
         when(gameManager.createGame()).thenReturn(Optional.of(0));
         Optional<Integer> id = action.createGame();
-        assertThat(id).isPresent().hasValue(0);
+        assertThat(id).hasValue(0);
 
     }
 

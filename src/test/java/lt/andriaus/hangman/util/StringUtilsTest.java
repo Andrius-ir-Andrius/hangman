@@ -2,6 +2,7 @@ package lt.andriaus.hangman.util;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -9,13 +10,15 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
+@TestInstance(PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 class StringUtilsTest {
-    private static String wordString;
+    private String wordString;
 
     @BeforeAll
-    static void setup() {
+    void setup() {
         wordString = "hello";
     }
 

@@ -6,6 +6,7 @@ import lt.andriaus.hangman.gateway.api.Database;
 import lt.andriaus.hangman.gateway.implementation.inmemory.InMemoryDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -15,14 +16,16 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
+@TestInstance(PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 class WithDatabaseGameManagerIntegrationTest {
     private static GameManager gameManager;
 
 
     @BeforeAll
-    static void setup() {
+    void setup() {
         Database<String> wordDB = new InMemoryDatabase<>();
         wordDB.save("Adele");
         Database<Game> gameDB = new InMemoryDatabase<>();

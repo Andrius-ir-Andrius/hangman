@@ -3,6 +3,7 @@ package lt.andriaus.hangman.domain;
 import lt.andriaus.hangman.util.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -10,13 +11,15 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
+@TestInstance(PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 public class GameIntegrationTest {
-    private static Game game;
+    private Game game;
 
     @BeforeAll
-    static void setUp() {
+    void setUp() {
         String word = "ABC";
         Set<Character> guessedLettersSet = StringUtils.stringToCharSet("ABDEFGHIJK");
         game = Game.Builder.fromWord(word).withLetters(guessedLettersSet).build();
