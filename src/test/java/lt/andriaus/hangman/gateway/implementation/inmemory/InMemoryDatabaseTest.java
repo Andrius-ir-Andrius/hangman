@@ -1,9 +1,11 @@
-package lt.andriaus.hangman.usecase;
+package lt.andriaus.hangman.gateway.implementation.inmemory;
 
-import lt.andriaus.hangman.database.Database;
+import lt.andriaus.hangman.gateway.api.Database;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,13 +14,14 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RamDatabaseTest {
+@ExtendWith(MockitoExtension.class)
+public class InMemoryDatabaseTest {
     private final List<String> DATA = Arrays.asList("ABC", "DEF", "GHI");
     Database<String> database;
 
     @BeforeEach
     void prepare() {
-        database = new RamDatabase<>();
+        database = new InMemoryDatabase<>();
     }
 
     @Test
@@ -55,6 +58,19 @@ public class RamDatabaseTest {
         DATA.forEach(database::save);
         Map<Integer, String> result = database.loadAll();
         Assertions.assertThrows(UnsupportedOperationException.class, () -> result.put(0, DATA.get(1)));
+    }
+
+    @Test
+    void shouldRetrieveNothing() {
+        Optional<String> wordFromDB = database.loadRandom();
+        assertThat(wordFromDB).isEmpty();
+    }
+
+    @Test
+    void shouldRetrieveSingleExistingItem() {
+        database.save("test");
+        Optional<String> retrieved = database.loadRandom();
+        assertThat(retrieved).hasValue("test");
     }
 
 }

@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableSet;
 
 public class Game {
     private final String word;
@@ -29,10 +30,10 @@ public class Game {
 
     public Game guessLetter(Character letter) {
         if (getGameStatus() != GameStatus.ONGOING)
-            throw GameException.GameIsAlreadyOverException();
+            throw GameException.gameIsAlreadyOverException();
 
         if (!Character.isAlphabetic(letter))
-            throw GameException.SymbolIsNotAlphabeticException();
+            throw GameException.symbolIsNotAlphabeticException(letter);
 
         Set<Character> newSet = new HashSet<>(guessedLetters);
         newSet.add(Character.toUpperCase(letter));
@@ -44,7 +45,7 @@ public class Game {
     }
 
     public GameStatus getGameStatus() {
-        List<Character> wordChars = Utils.StringToCharList(word);
+        List<Character> wordChars = Utils.stringToCharList(word);
 
         Set<Character> incorrectlyGuessedLetters = guessedLetters
                 .stream()

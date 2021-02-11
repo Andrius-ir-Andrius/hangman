@@ -13,14 +13,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 public class GameIntegrationTest {
-    private static String word;
-    private static Set<Character> guessedLettersSet;
     private static Game game;
 
     @BeforeAll
     static void setUp() {
-        word = "ABC";
-        guessedLettersSet = Utils.StringToCharSet("ABDEFGHIJK");
+        String word = "ABC";
+        Set<Character> guessedLettersSet = Utils.stringToCharSet("ABDEFGHIJK");
         game = Game.Builder.fromWord(word).withLetters(guessedLettersSet).build();
     }
 
@@ -67,9 +65,9 @@ public class GameIntegrationTest {
 
         assertThatThrownBy(() -> lostGame.guessLetter('z'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining(GameException.Exceptions.GameIsAlreadyOverException.toString());
+                .hasMessageContaining("Game is already over");
         assertThatThrownBy(() -> wonGame.guessLetter('z'))
                 .isInstanceOf(GameException.class)
-                .hasMessageContaining(GameException.Exceptions.GameIsAlreadyOverException.toString());
+                .hasMessageContaining("Game is already over");
     }
 }

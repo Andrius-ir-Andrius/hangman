@@ -1,21 +1,17 @@
 package lt.andriaus.hangman.domain;
 
-class GameException extends RuntimeException {
-    enum Exceptions {
-        GameIsAlreadyOverException,
-        SymbolIsNotAlphabeticException
-    }
+public class GameException extends RuntimeException {
 
     private GameException(String message) {
         super(message);
     }
 
-    public static GameException GameIsAlreadyOverException() {
-        return new GameException(Exceptions.GameIsAlreadyOverException.toString());
+    public static GameException gameIsAlreadyOverException() {
+        return new GameException("Game is already over");
     }
 
-    public static GameException SymbolIsNotAlphabeticException() {
-        return new GameException(Exceptions.SymbolIsNotAlphabeticException.toString());
+    public static GameException symbolIsNotAlphabeticException(char letter) {
+        return new GameException(String.format("Symbol [%s] is not alphabetic", letter));
     }
 
 }

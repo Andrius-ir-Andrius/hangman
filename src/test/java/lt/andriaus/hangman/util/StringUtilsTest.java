@@ -1,16 +1,12 @@
 package lt.andriaus.hangman.util;
 
-import lt.andriaus.hangman.database.Database;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class StringUtilsTest {
     private static String wordString;
@@ -22,18 +18,18 @@ class StringUtilsTest {
 
     @Test
     void shouldReturnSet() {
-        Set<Character> wordSet = Utils.StringToCharSet(wordString);
+        Set<Character> wordSet = Utils.stringToCharSet(wordString);
 
         assertThat(wordSet.contains('h')).isTrue();
         assertThat(wordSet.size()).isEqualTo(wordString.length() - 1);
     }
 
     @Test
-    void shouldReturnList() {
-        List<Character> wordList = Utils.StringToCharList(wordString);
+    void shouldReturnCharList() {
+        List<Character> wordList = Utils.stringToCharList(wordString);
 
-        assertThat(wordList.get(0)).isEqualTo(wordList.get(0));
-        assertThat(wordList.get(1)).isEqualTo(wordList.get(1));
-        assertThat(wordList.size()).isEqualTo(wordString.length());
+        assertThat(wordList.get(0)).isEqualTo(wordString.charAt(0));
+        assertThat(wordList.get(1)).isEqualTo(wordString.charAt(1));
+        assertThat(wordList).hasSize(wordString.length());
     }
 }
