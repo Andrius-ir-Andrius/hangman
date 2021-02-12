@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
 @ExtendWith(MockitoExtension.class)
-public class ServerTest {
+public class ServerRouteTest {
 
     private final String URL = "http://localhost:4567/game";
 

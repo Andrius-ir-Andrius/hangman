@@ -26,6 +26,10 @@ public class RequestStub extends Request {
     }
 
     public String queryParams(String query) {
-        return this.query.get(query);
+        try {
+            return this.query.get(query);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
