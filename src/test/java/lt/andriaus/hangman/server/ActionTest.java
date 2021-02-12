@@ -1,5 +1,6 @@
 package lt.andriaus.hangman.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lt.andriaus.hangman.domain.Game;
 import lt.andriaus.hangman.domain.GameException;
 import lt.andriaus.hangman.usecase.GameManager;
@@ -15,6 +16,7 @@ import spark.Request;
 import java.util.Map;
 import java.util.Optional;
 
+import static lt.andriaus.hangman.util.RequestBody.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -54,57 +56,80 @@ class ActionTest {
     }
 
     @Test
-    void shouldNotFindGame() {
+    void shouldNotFindWrongIdGame() {
         when(gameManager.loadGame(-1)).thenReturn(Optional.empty());
         Request wrongIdRequest = new RequestStub(Map.of("id", "-1"));
-        Request notNumericRequest = new RequestStub(Map.of("id", "a"));
         Optional<Game> wrongIdGame = action.loadGame(wrongIdRequest);
         assertThat(wrongIdGame).isEmpty();
+    }
+
+    @Test
+    void shouldNotFindAlphabeticIdGame() {
+        Request notNumericRequest = new RequestStub(Map.of("id", "a"));
         assertThatThrownBy(() -> action.loadGame(notNumericRequest))
                 .isInstanceOf(NumberFormatException.class);
     }
 
     @Test
-    void shouldGuessLetter() {
+    void shouldGuessLetter() throws JsonProcessingException {
         when(gameManager.createGame()).thenReturn(Optional.of(0));
         when(gameManager.guessLetter(0, 'a')).thenReturn(optionalGame);
         Optional<Integer> id = action.createGame();
         Request request = new RequestStub(
-                String.format(
-                        "{\"id\":\"%s\", \"letter\":\"%s\"}",
-                        id.orElse(-1),
-                        "a")
+                toJson(Map.of("id", id.orElse(-1), "letter", 'a'))
         );
         Optional<Game> game = action.guessLetter(request);
         assertThat(game).isPresent();
     }
 
     @Test
-    void shouldNotGuessLetter(){
+    void shouldNotGuessLetterInEmptyGame() throws JsonProcessingException {
         when(gameManager.guessLetter(-1, 'a')).thenReturn(Optional.empty());
-        when(gameManager.guessLetter(0, '5')).thenThrow(GameException.symbolIsNotAlphabeticException('5'));
 
-        String template = "{\"id\":\"%s\", \"letter\":\"%s\"}";
-
-        Request wrongIdRequest = new RequestStub(String.format(template, -1, "a"));
-        Request wrongLetterRequest = new RequestStub(String.format(template, 0, "5"));
-        Request stringLetterRequest = new RequestStub(String.format(template, -1, "labs"));
-        Request stringIdRequest = new RequestStub(String.format(template, "a", "l"));
+        Request wrongIdRequest = new RequestStub(
+                toJson(Map.of("id", -1, "letter", "a"))
+        );
 
         Optional<Game> wrongIdGame = action.guessLetter(wrongIdRequest);
 
         assertThat(wrongIdGame).isEmpty();
 
+    }
+
+    @Test
+    void shouldNotGuessNonAlphabeticLetter() throws JsonProcessingException {
+        when(gameManager.guessLetter(0, '5')).thenThrow(
+                GameException.symbolIsNotAlphabeticException('5')
+        );
+
+        Request wrongLetterRequest = new RequestStub(
+                toJson(Map.of("id", 0, "letter", "5"))
+        );
+
         assertThatThrownBy(() -> action.guessLetter(wrongLetterRequest))
                 .isInstanceOf(GameException.class)
                 .hasMessage("Symbol [5] is not alphabetic");
+    }
+
+    @Test
+    void shouldNotGuessStringLetter() throws JsonProcessingException {
+        Request stringLetterRequest = new RequestStub(
+                toJson(Map.of("id", -1, "letter", "labas"))
+        );
 
         assertThatThrownBy(() -> action.guessLetter(stringLetterRequest))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("A single character was expected, [labs] was given");
+                .hasMessage("Wrong request body");
+    }
+
+    @Test
+    void shouldNotGuessLetterWithAlphabeticGameId() throws JsonProcessingException {
+        Request stringIdRequest = new RequestStub(
+                toJson(Map.of("id", "a", "letter", "a"))
+        );
 
         assertThatThrownBy(() -> action.guessLetter(stringIdRequest))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("Integer was expected, [a] was given");
+                .hasMessage("Wrong request body");
     }
 }

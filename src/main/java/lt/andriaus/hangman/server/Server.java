@@ -8,6 +8,7 @@ import lt.andriaus.hangman.gateway.implementation.inmemory.InMemoryDatabase;
 import lt.andriaus.hangman.usecase.GameManager;
 import lt.andriaus.hangman.usecase.WithDatabaseGameManager;
 import lt.andriaus.hangman.util.JSONGame;
+import lt.andriaus.hangman.util.RequestBody;
 import spark.Request;
 
 import java.util.Optional;
@@ -68,7 +69,7 @@ public class Server {
         if (req.queryParams("id").length() > 0)
             return req.queryParams("id");
         try {
-            return new ObjectMapper().readValue(req.body(), Action.RequestBody.class).getId() + "";
+            return new ObjectMapper().readValue(req.body(), RequestBody.class).getId() + "";
         } catch (Exception e) {
             return "";
         }
