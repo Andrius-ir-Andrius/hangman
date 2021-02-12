@@ -21,6 +21,7 @@ dependencies {
     testImplementation testDep.mockito
     testImplementation testDep.junit5
     testImplementation testDep.assertj
+    testImplementation testDep.unirest
     testRuntimeOnly testDep.junit5_engine
 }
 

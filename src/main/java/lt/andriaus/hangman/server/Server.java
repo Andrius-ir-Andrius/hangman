@@ -66,7 +66,7 @@ public class Server {
     }
 
     private static String getIdFromQueryAndBody(Request req) {
-        if (req.queryParams("id").length() > 0)
+        if (req.queryParams().contains("id"))
             return req.queryParams("id");
         try {
             return new ObjectMapper().readValue(req.body(), RequestBody.class).getId() + "";

@@ -1,119 +1,96 @@
 package lt.andriaus.hangman.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import lt.andriaus.hangman.util.RequestBody;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
+import static java.lang.Integer.parseInt;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 public class ServerTest {
+
+    private final String URL = "http://localhost:4567/game";
+
     @BeforeAll
     void setup() {
         Server.main(null);
     }
 
-    HttpURLConnection createConnection(String url, String method) throws IOException {
-        HttpURLConnection urlConn = (HttpURLConnection) new URL(url).openConnection();
-        urlConn.setRequestMethod(method);
-        urlConn.setDoOutput(true);
-        return urlConn;
-    }
-
-    void setRequestBody(HttpURLConnection urlConn, String requestBody) throws IOException {
-        OutputStream os = urlConn.getOutputStream();
-        os.write(requestBody.getBytes(StandardCharsets.UTF_8));
-        os.close();
-    }
-
-    String getContentsFromConnectionStream(HttpURLConnection connection) throws IOException {
-        InputStream inputStream;
-        try {
-            inputStream = connection.getInputStream();
-        } catch (Exception e) {
-            inputStream = connection.getErrorStream();
-        }
-        StringBuilder respDataBuf = new StringBuilder();
-        respDataBuf.setLength(0);
-        int b;
-        while ((b = inputStream.read()) != -1) {
-            respDataBuf.append((char) b);
-        }
-        return respDataBuf.toString();
-
-    }
-
-    String getUrlContents(String url, String method, String requestBody) throws IOException {
-        HttpURLConnection connection = createConnection(url, method);
-        if (!requestBody.equals(""))
-            setRequestBody(connection, requestBody);
-        return getContentsFromConnectionStream(connection);
+    @Test
+    void shouldNotFindNonExistingRoute() throws UnirestException {
+        HttpResponse<String> response = Unirest.get(URL + "a")
+                .asString();
+        assertThat(response.getStatus()).isEqualTo(404);
     }
 
     @Test
-    void shouldCreateGame() throws IOException {
-        URL url = new URL("http://localhost:4567/game");
-        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-        urlConn.setRequestMethod("POST");
-        assertThat(urlConn.getResponseCode()).isEqualTo(HttpURLConnection.HTTP_CREATED);
+    void shouldCreateGame() throws UnirestException {
+        HttpResponse<String> response = Unirest.post(URL)
+                .asString();
+        assertThat(response.getStatus()).isEqualTo(201);
+        assertThat(response.getBody()).containsOnlyDigits();
+        assertThat(parseInt(response.getBody())).isGreaterThan(-1);
     }
 
     @Test
-    void shouldLoadGameAfterCreate() throws IOException {
-        String id = getUrlContents("http://localhost:4567/game", "POST", "");
-        String loadedGame = getUrlContents("http://localhost:4567/game?id=" + id, "GET", "");
-
-        assertThat(loadedGame).contains("\"guessedLetters\":[]");
+    void shouldLoadGameAfterCreate() throws UnirestException {
+        int id = parseInt(Unirest.post(URL)
+                .asString().getBody());
+        HttpResponse<JsonNode> response = Unirest.get(URL)
+                .queryString("id", id)
+                .asJson();
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getBody()).matches(e -> e.toString().contains("\"guessedLetters\":[]"));
     }
 
     @Test
-    void shouldNotLoadGame() throws IOException {
-        assertThat(getUrlContents(
-                "http://localhost:4567/game?id=-1",
-                "GET",
-                "")
-        ).isEqualTo("Result not found for request: id=-1");
+    void shouldNotLoadNotExistingGame() throws UnirestException {
+        HttpResponse<String> response = Unirest.get(URL)
+                .queryString("id", -1)
+                .asString();
+        assertThat(response.getStatus()).isEqualTo(404);
     }
 
     @Test
-    void shouldGuessLetterAfterCreate() throws IOException {
-        String id = getUrlContents("http://localhost:4567/game", "POST", "");
-        String payload = String.format("{\"id\":\"%s\", \"letter\":\"%s\"}", id, "a");
-        String loadedGame = getUrlContents("http://localhost:4567/game", "PUT", payload);
+    void shouldGuessLetterAfterCreate() throws UnirestException, JsonProcessingException {
+        int id = parseInt(Unirest.post(URL)
+                .asString().getBody());
+        HttpResponse<JsonNode> response = Unirest.put(URL)
+                .body(RequestBody.toJson(Map.of("id", id, "letter", 'a')))
+                .asJson();
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(response.getBody()).matches(e -> e.toString().contains("\"guessedLetters\":[\"A\"]"));
 
-        assertThat(loadedGame).contains("\"guessedLetters\":[\"A\"]");
     }
 
     @Test
-    void shouldNotGuessNonAlphabeticSymbol() throws IOException {
-        String id = getUrlContents("http://localhost:4567/game", "POST", "");
-        String payload = String.format("{\"id\":\"%s\", \"letter\":\"%s\"}", id, "5");
-        assertThat(getUrlContents(
-                "http://localhost:4567/game",
-                "PUT",
-                payload)
-        ).isEqualTo("Symbol [5] is not alphabetic");
+    void shouldNotGuessNonAlphabeticSymbol() throws UnirestException, JsonProcessingException {
+        int id = parseInt(Unirest.post(URL)
+                .asString().getBody());
+        HttpResponse<String> response = Unirest.put(URL)
+                .body(RequestBody.toJson(Map.of("id", id, "letter", '5')))
+                .asString();
+        assertThat(response.getStatus()).isEqualTo(500);
     }
 
-
     @Test
-    void shouldNotGuessInNonExistingGame() throws IOException {
-        String payload = String.format("{\"id\":\"%s\", \"letter\":\"%s\"}", "-1", "a");
-        assertThat(getUrlContents(
-                "http://localhost:4567/game",
-                "PUT",
-                payload)
-        ).isEqualTo("Result not found for request: id=-1");
+    void shouldNotGuessInNonExistingGame() throws UnirestException, JsonProcessingException {
+        HttpResponse<String> response = Unirest.put(URL)
+                .body(RequestBody.toJson(Map.of("id", -1, "letter", 'a')))
+                .asString();
+        assertThat(response.getStatus()).isEqualTo(404);
     }
 }
