@@ -1,17 +1,24 @@
 package lt.andriaus.hangman.util;
 
+import spark.Request;
+
 import java.util.Map;
 
-public class RequestStub extends spark.Request {
-    private String body;
-    private Map<String, String> query;
+public class RequestStub extends Request {
+    private final String body;
+    private final Map<String, String> query;
+
+    private RequestStub(String body, Map<String, String> query) {
+        this.body = body;
+        this.query = query;
+    }
 
     public RequestStub(String body) {
-        this.body = body;
+        this(body, null);
     }
 
     public RequestStub(Map<String, String> query) {
-        this.query = query;
+        this(null, query);
     }
 
     public String body() {
