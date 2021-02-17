@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import CreateButton from "./components/CreateButton";
 import Game from "./domain/Game";
-import {loadGame} from "./gateway/GameGateway";
+import GameContext from './domain/GameContext';
 import GuessLetterButton from "./components/GuessLetterButton";
 
 
@@ -12,31 +12,40 @@ type stateType = {
 
 function App() {
     const [state, setState] = useState<stateType>({game: null, isLoaded: false});
+    const gameContext = useContext(GameContext);
     useEffect(() => {
         (async () => {
-            if (localStorage.getItem('id') === null){
+            if (gameContext.game === null) {
                 setState({...state, isLoaded: true})
                 return
             }
-            const game = await loadGame(+localStorage.getItem('id')!)
+            const game = gameContext.game
             setState({...state, isLoaded: true, game})
         })()
 
 
-    }, [])
+    }, [])// eslint-disable-line react-hooks/exhaustive-deps
+
     return (
-        <>
-            {!state.isLoaded ? 'Loading' :
+        <GameContext.Provider value={
+            {
+                updateGame: (game => {
+                    setState({...state, isLoaded: true, game: game ?? null})
+                }),
+                game: state.game
+            }
+        }>
+            <>{!state.isLoaded ? 'Loading' :
                 state.game === null ?
                     <>
                         <CreateButton/>
                     </> :
                     <>
-                        <CreateButton/>
                         {JSON.stringify(state.game)}
+                        <GuessLetterButton letter={'a'} />
                     </>
-            }
-        </>
+            }</>
+        </GameContext.Provider>
     );
 }
 

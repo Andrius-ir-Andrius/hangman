@@ -1,21 +1,23 @@
-import React from "react";
+import React, {useContext} from "react";
 import CallbackButton from "./CallbackButton";
 import {guessLetter} from "../gateway/GameGateway";
+import GameContext from "../domain/GameContext";
 
 interface propTypes {
-    id: number
     letter: string
 }
 
-const GuessLetterButton = ({id, letter}: propTypes) => {
-    return <CallbackButton
-        onFailure={(e) => alert(e?.message)}
-        text={letter} callback={
-        async () => {
-            await guessLetter(id, letter)
-            window.location.reload()
-        }
-    }/>
+const GuessLetterButton = ({letter}: propTypes) => {
+    const gameContext = useContext(GameContext);
+    return (
+        <CallbackButton
+            onFailure={(e) => alert(e?.message)}
+            text={letter} callback={
+            async () => {
+                let game = await guessLetter(gameContext.game!.getId(), letter)
+                gameContext.updateGame(game)
+            }
+        }/>)
 }
 
 export default GuessLetterButton;

@@ -10,6 +10,10 @@ export default class Game {
         this.id = id
     }
 
+    getId() : number {
+        return this.id
+    }
+
     getWord(): string {
         return this.word
     }

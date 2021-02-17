@@ -1,18 +1,22 @@
-import React from "react";
+import React, {useContext} from "react";
 import CallbackButton from "./CallbackButton";
-import {createGame} from "../gateway/GameGateway";
+import {createGame, loadGame} from "../gateway/GameGateway";
+import GameContext from "../domain/GameContext";
 
 
 const CreateButton = () => {
-    return <CallbackButton
-        onFailure={(e) => alert(e?.message)}
-        text={"Create Game"} callback={
-        async () => {
-            const gameId = await createGame()
-            localStorage.setItem('id', gameId + '')
-            window.location.reload()
-        }
-    }/>
+    const gameContext = useContext(GameContext);
+    return (
+        <CallbackButton
+            onFailure={(e) => alert(e?.message)}
+            text={"Create Game"} callback={
+            async () => {
+                const gameId = await createGame()
+                const game = await loadGame(gameId)
+                gameContext.updateGame(game)
+            }
+        }/>
+    )
 }
 
 export default CreateButton;
