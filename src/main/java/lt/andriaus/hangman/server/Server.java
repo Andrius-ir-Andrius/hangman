@@ -17,9 +17,28 @@ public class Server {
     public static void main(String[] args) {
         initialiseConfig();
 
-        String websiteUrl = "";
-        String corsPattern = String.format("https?:\\/\\/:(localhost|%s).+", websiteUrl);
-        before((req, res) -> res.header("Access-Control-Allow-Origin", corsPattern));
+        options("/*", (req, res) -> {
+            String accessControlRequestHeaders = req
+                    .headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                res.header("Access-Control-Allow-Headers",
+                        accessControlRequestHeaders);
+            }
+
+            String accessControlRequestMethod = req
+                    .headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                res.header("Access-Control-Allow-Methods",
+                        accessControlRequestMethod);
+            }
+
+            return "OK";
+        });
+
+
+        before((req, res) -> res.header("Access-Control-Allow-Origin", "*"));
+        before((req, res) -> res.header("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS"));
+
 
         post(GAME_URL, (req, res) -> process(req, res, () -> {
             res.status(201);
@@ -30,9 +49,10 @@ public class Server {
                 action.loadGame(req).map(JSONGame::new)
         ));
 
-        put(GAME_URL, (req, res) -> process(req, res, () ->
-                action.guessLetter(req).map(JSONGame::new)
-        ));
+        put(GAME_URL, (req, res) -> process(req, res, () -> {
+            res.status(201);
+            return action.guessLetter(req).map(JSONGame::new);
+        }));
     }
 
     private static void initialiseConfig() {
