@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import CreateButton from "./components/CreateButton";
 import Game from "./domain/Game";
+import {loadGame} from "./gateway/GameGateway";
 
 
 type stateType = {
@@ -14,7 +15,7 @@ function App() {
         (async () => {
             if (localStorage.getItem('id') !== null)
                 setState({...state, isLoaded: true})
-            const game = await Game.loadGame(+localStorage.getItem('id')!)
+            const game = await loadGame(+localStorage.getItem('id')!)
             setState({...state, isLoaded: false, game})
         })()
 
