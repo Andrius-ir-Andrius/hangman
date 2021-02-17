@@ -30,7 +30,7 @@ export default class Game {
     }
 
     static async loadGame(id: number): Promise<Game> {
-        let game: responseGame = await (await fetch(URL + '?id=' + id,)).json().catch(() => {
+        let game: responseGame = await (await fetch(URL + '?id=' + id)).json().catch(() => {
             throw new DOMException('Failed to load game')
         })
         return new Game(game.word, game.guessedLetters, id)
@@ -39,8 +39,8 @@ export default class Game {
     async guessLetter(letter: string): Promise<Game> {
         let game: responseGame = await (await fetch(URL, {
             method: 'PUT', body: JSON.stringify({
-                id: this.id
-                , letter
+                id: this.id,
+                letter
             })
         })).json().catch(() => {
             throw new DOMException('Failed to guess')

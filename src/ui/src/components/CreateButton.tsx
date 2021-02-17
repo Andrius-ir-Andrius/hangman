@@ -1,17 +1,18 @@
 import React from "react";
 import Game from "../domain/Game";
+import CallbackButton from "./CallbackButton";
 
-interface propTypes {
 
-}
-
-const CreateButton = ({}: propTypes) => {
-    return (
-        <button onClick={async () => {
-            await Game.createGame()
-        }
-        }>Create Game</button>
-    )
+const CreateButton = () => {
+   return <CallbackButton
+       onFailure={(e) => alert(e?.message)}
+       text={"Create Game"} callback={
+       async () => {
+           const gameId = await Game.createGame()
+           localStorage.setItem('id', gameId+'')
+           window.location.reload()
+       }
+   } />
 }
 
 export default CreateButton;
