@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { guessLetter } from "../gateway/GameGateway";
 import GameContext from "../domain/GameContext";
+import { Button } from "@material-ui/core";
 
 interface propTypes {
   letter: string;
@@ -20,7 +21,11 @@ const GuessLetterButton = ({ letter, data, disabled }: propTypes) => {
       });
   };
   return (
-    <button
+    <Button
+      size={"large"}
+      className={"game__keyboard__button"}
+      variant="contained"
+      color={"primary"}
       disabled={disabled}
       data-data={data}
       onClick={async () => {
@@ -28,7 +33,7 @@ const GuessLetterButton = ({ letter, data, disabled }: propTypes) => {
       }}
     >
       {letter}
-    </button>
+    </Button>
   );
 };
 

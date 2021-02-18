@@ -33,9 +33,9 @@ const ScreenKeyboard = ({ id }: propTypes) => {
     };
   }, []);
   return (
-    <div className={"keyboard"} ref={divRef}>
+    <div className={"game__keyboard"} ref={divRef}>
       {Keyboard.layout.map((row, i) => (
-        <div key={"keyboard" + i}>
+        <div key={"keyboard" + i} className={"game__keyboard-row"}>
           {row.map((letter) => (
             <GuessLetterButton
               letter={letter}

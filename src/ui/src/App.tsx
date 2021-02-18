@@ -4,6 +4,7 @@ import GameContext from "./domain/GameContext";
 import { createGame, loadGame } from "./gateway/GameGateway";
 import ScreenKeyboard from "./components/ScreenKeyboard";
 import GameDrawWindow from "./components/GameDrawWindow";
+import "./App.scss";
 
 type stateType = {
   game: Game | null;
@@ -67,20 +68,20 @@ function App() {
         game: state.game,
       }}
     >
-      <>
+      <div className={"game"}>
         {!state.isLoaded ? (
           "Loading"
         ) : state.game === null ? (
           <>{state.error}</>
         ) : (
           <>
-            {state.error ?? ""}
             <GameDrawWindow />
+            {state.error ?? ""}
             <ScreenKeyboard id={state.game.getId()} />
             {state.game.hasFinished() ? <a href={"/"}>Create game</a> : ""}
           </>
         )}
-      </>
+      </div>
     </GameContext.Provider>
   );
 }
