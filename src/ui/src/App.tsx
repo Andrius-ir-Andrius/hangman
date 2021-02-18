@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Game from "./domain/Game";
 import GameContext from "./domain/GameContext";
 import { createGame, loadGame } from "./gateway/GameGateway";
 import ScreenKeyboard from "./components/ScreenKeyboard";
-import CreateButton from "./components/CreateButton";
 import GameDrawWindow from "./components/GameDrawWindow";
 
 type stateType = {
@@ -18,7 +17,6 @@ function App() {
     isLoaded: false,
     error: null,
   });
-  const gameContext = useContext(GameContext);
 
   const loadNewGameAndUpdateQuery = async () => {
     const gameId = await createGame().catch((e) => {
@@ -79,7 +77,7 @@ function App() {
             {state.error ?? ""}
             <GameDrawWindow />
             <ScreenKeyboard id={state.game.getId()} />
-            {state.game.hasFinished() ? <CreateButton /> : ""}
+            {state.game.hasFinished() ? <a href={"/"}>Create game</a> : ""}
           </>
         )}
       </>
