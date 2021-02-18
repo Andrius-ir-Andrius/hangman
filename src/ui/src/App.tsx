@@ -1,85 +1,89 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 import Game from "./domain/Game";
-import GameContext from './domain/GameContext';
-import {createGame, loadGame} from "./gateway/GameGateway";
+import GameContext from "./domain/GameContext";
+import { createGame, loadGame } from "./gateway/GameGateway";
 import ScreenKeyboard from "./components/ScreenKeyboard";
 import CreateButton from "./components/CreateButton";
 
-
 type stateType = {
-    game: Game | null
-    isLoaded: boolean
-    error: string | null
-}
+  game: Game | null;
+  isLoaded: boolean;
+  error: string | null;
+};
 
 function App() {
-    const [state, setState] = useState<stateType>({game: null, isLoaded: false, error: null});
-    const gameContext = useContext(GameContext);
+  const [state, setState] = useState<stateType>({
+    game: null,
+    isLoaded: false,
+    error: null,
+  });
+  const gameContext = useContext(GameContext);
 
+  const loadNewGameAndUpdateQuery = async () => {
+    const gameId = await createGame().catch((e) => {
+      setState({ ...state, error: "Failed to create game", isLoaded: true });
+    });
+    if (gameId === undefined) return;
+    const game = await loadGame(gameId).catch((e) => {
+      setState({ ...state, error: "Failed to load game", isLoaded: true });
+    });
+    if (game === undefined) return;
+    setState({ ...state, isLoaded: true, game: game ?? null });
+    window.history.pushState({}, "", window.location.href + "?id=" + gameId);
+  };
 
-    const loadNewGameAndUpdateQuery = async () => {
-        const gameId = await createGame().catch((e) => {
-            setState({...state, error: 'Failed to create game', isLoaded: true})
-        })
-        if (gameId === undefined)
-            return
-        const game = await loadGame(gameId).catch((e) => {
-            setState({...state, error: 'Failed to load game', isLoaded: true})
-        })
-        if (game === undefined)
-            return
-        setState({...state, isLoaded: true, game: game ?? null})
-        window.history.pushState({}, '', window.location.href + '?id=' + gameId)
+  const loadGameFromQuery = async (id: string) => {
+    const game = await loadGame(+id).catch((e) => {
+      setState({ ...state, error: "Failed to load game", isLoaded: true });
+    });
+    if (game === undefined) {
+      return;
     }
+    setState({ ...state, isLoaded: true, game: game ?? null });
+  };
 
-    const loadGameFromQuery = async (id: string) => {
-        const game = await loadGame(+id).catch((e) => {
-            setState({...state, error: 'Failed to load game', isLoaded: true})
-        })
-        if (game === undefined) {
-            return
-        }
-        setState({...state, isLoaded: true, game: game ?? null})
-    }
+  useEffect(() => {
+    (async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get("id");
+      if (id === null) await loadNewGameAndUpdateQuery();
+      else await loadGameFromQuery(id);
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-
-    useEffect(() => {
-        (async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            if (id === null)
-                await loadNewGameAndUpdateQuery()
-            else
-                await loadGameFromQuery(id)
-        })()
-    }, [])// eslint-disable-line react-hooks/exhaustive-deps
-
-    return (
-        <GameContext.Provider value={
-            {
-                updateGame: (game => {
-                    setState({...state, isLoaded: true, game: game ?? null, error: null})
-                }),
-                updateError: (error => {
-                    setState({...state, error: error ?? null})
-                }),
-                game: state.game
-            }
-        }>
-            <>{!state.isLoaded ? 'Loading' :
-                state.game === null ?
-                    <>
-                        {state.error}
-                    </> :
-                    <>
-                        {state.error ?? ''}
-                        {JSON.stringify(state.game)}
-                        <ScreenKeyboard id={state.game.getId()}/>
-                        {state.game.hasFinished() ? <CreateButton/> : ''}
-                    </>
-            }</>
-        </GameContext.Provider>
-    );
+  return (
+    <GameContext.Provider
+      value={{
+        updateGame: (game) => {
+          setState({
+            ...state,
+            isLoaded: true,
+            game: game ?? null,
+            error: null,
+          });
+        },
+        updateError: (error) => {
+          setState({ ...state, error: error ?? null });
+        },
+        game: state.game,
+      }}
+    >
+      <>
+        {!state.isLoaded ? (
+          "Loading"
+        ) : state.game === null ? (
+          <>{state.error}</>
+        ) : (
+          <>
+            {state.error ?? ""}
+            {JSON.stringify(state.game)}
+            <ScreenKeyboard id={state.game.getId()} />
+            {state.game.hasFinished() ? <CreateButton /> : ""}
+          </>
+        )}
+      </>
+    </GameContext.Provider>
+  );
 }
 
 export default App;
