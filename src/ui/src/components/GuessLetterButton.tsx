@@ -11,13 +11,17 @@ const GuessLetterButton = ({letter}: propTypes) => {
     const gameContext = useContext(GameContext);
     return (
         <CallbackButton
-            onFailure={(e) => alert(e?.message)}
+            onFailure={(e) => {
+                gameContext.updateError(e?.message+'')
+            }}
             text={letter} callback={
             async () => {
                 let game = await guessLetter(gameContext.game!.getId(), letter)
                 gameContext.updateGame(game)
             }
-        }/>)
+        }
+        shouldDisable={false}
+        />)
 }
 
 export default GuessLetterButton;

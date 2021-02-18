@@ -15,34 +15,53 @@ type stateType = {
 function App() {
     const [state, setState] = useState<stateType>({game: null, isLoaded: false, error: null});
     const gameContext = useContext(GameContext);
+
+
+    const loadNewGameAndUpdateQuery = async () => {
+        const gameId = await createGame().catch((e) => {
+            setState({...state, error: 'Failed to create game', isLoaded: true})
+        })
+        if(gameId === undefined)
+            return
+        const game = await loadGame(gameId).catch((e) => {
+            setState({...state, error: 'Failed to load game', isLoaded: true})
+        })
+        if(game === undefined)
+            return
+        setState({...state, isLoaded: true, game : game??null})
+        window.history.pushState({}, '', window.location.href+'?id='+gameId)
+    }
+
+    const loadGameFromQuery = async (id : string) => {
+        const game = await loadGame(+id).catch((e) => {
+            setState({...state, error: 'Failed to load game', isLoaded: true})
+        })
+        if(game === undefined) {
+            return
+        }
+        setState({...state, isLoaded: true, game : game??null})
+    }
+
+
     useEffect(() => {
         (async () => {
-            if (gameContext.game === null) {
-                const gameId = await createGame().catch((e) => {
-                    setState({...state, error: 'Failed to create game', isLoaded: true})
-                })
-                if(gameId === undefined)
-                    return
-                const game = await loadGame(gameId).catch((e) => {
-                    setState({...state, error: 'Failed to load game', isLoaded: true})
-                })
-                if(game === undefined)
-                    return
-                setState({...state, isLoaded: true, game : game??null})
-                return
-            }
-            const game = gameContext.game
-            setState({...state, isLoaded: true, game})
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if(id === null)
+                await loadNewGameAndUpdateQuery()
+            else
+                await loadGameFromQuery(id)
         })()
-
-
     }, [])// eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <GameContext.Provider value={
             {
                 updateGame: (game => {
-                    setState({...state, isLoaded: true, game: game ?? null})
+                    setState({...state, isLoaded: true, game: game ?? null, error: null})
+                }),
+                updateError: (error => {
+                   setState({...state, error: error??null})
                 }),
                 game: state.game
             }
@@ -53,8 +72,10 @@ function App() {
                         {state.error}
                     </> :
                     <>
+                        {state.error??''}
                         {JSON.stringify(state.game)}
                         <GuessLetterButton letter={'a'}/>
+                        <GuessLetterButton letter={'5'}/>
                     </>
             }</>
         </GameContext.Provider>

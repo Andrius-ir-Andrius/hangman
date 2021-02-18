@@ -4,13 +4,15 @@ type propTypes = {
     text : string
     callback : () => any
     onFailure? : ((e? : DOMException) => any)
+    shouldDisable? : boolean
 }
 
-const CallbackButton = ({text, callback, onFailure}: propTypes) => {
+const CallbackButton = ({text, callback, onFailure, shouldDisable}: propTypes) => {
     const [isDisabled, setDisabled] = useState<boolean>(false)
 
     const handleClick = async () => {
-        setDisabled(true);
+        if(shouldDisable === undefined || shouldDisable)
+            setDisabled(true);
         try {
             await callback()
         }catch (e){
