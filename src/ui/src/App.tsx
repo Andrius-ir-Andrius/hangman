@@ -4,6 +4,7 @@ import GameContext from "./domain/GameContext";
 import { createGame, loadGame } from "./gateway/GameGateway";
 import ScreenKeyboard from "./components/ScreenKeyboard";
 import CreateButton from "./components/CreateButton";
+import GameDrawWindow from "./components/GameDrawWindow";
 
 type stateType = {
   game: Game | null;
@@ -76,7 +77,7 @@ function App() {
         ) : (
           <>
             {state.error ?? ""}
-            {JSON.stringify(state.game)}
+            <GameDrawWindow />
             <ScreenKeyboard id={state.game.getId()} />
             {state.game.hasFinished() ? <CreateButton /> : ""}
           </>
