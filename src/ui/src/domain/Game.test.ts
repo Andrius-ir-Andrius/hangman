@@ -11,3 +11,11 @@ test("should count all guessed letters as wrong", () => {
 test("should count guessed letters not in word as wrong", () => {
     expect(new Game('a__a', ['a', 'b', 'c'], -1).wronglyGuessedCount()).toBe(2)
 })
+
+test("game should not be finished", () => {
+    expect(new Game('a__a', [], -1).hasFinished()).toBeFalsy();
+})
+
+test("game should be finished", () => {
+    expect(new Game('arfa', [], -1).hasFinished()).toBeTruthy();
+})
