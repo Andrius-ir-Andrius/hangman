@@ -23,7 +23,10 @@ const GuessLetterButton = ({ letter, data, disabled }: propTypes) => {
   return (
     <Button
       size={"large"}
-      className={"game__keyboard__button"}
+      className={
+        "game__keyboard__button" +
+        (disabled ? " game__keyboard__button--disabled" : "")
+      }
       variant="contained"
       color={"primary"}
       disabled={disabled}
