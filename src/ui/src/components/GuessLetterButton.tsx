@@ -11,13 +11,12 @@ interface propTypes {
 const GuessLetterButton = ({ letter, data, disabled }: propTypes) => {
   const gameContext = useContext(GameContext);
   const handleClick = async () => {
-    guessLetter(gameContext.game?.getId()!, letter)
-      .then((game) => {
-        gameContext.updateGame(game);
-      })
-      .catch((e) => {
-        gameContext.updateError(e.message);
-      });
+    try {
+      const game = await guessLetter(gameContext.game?.getId()!, letter);
+      gameContext.updateGame(game);
+    } catch (e) {
+      gameContext.updateError(e ? e.message : "Unexpected Error");
+    }
   };
   return (
     <button
@@ -28,9 +27,7 @@ const GuessLetterButton = ({ letter, data, disabled }: propTypes) => {
       color={"primary"}
       disabled={disabled}
       data-data={data}
-      onClick={async () => {
-        await handleClick();
-      }}
+      onClick={handleClick}
     >
       {letter}
     </button>
