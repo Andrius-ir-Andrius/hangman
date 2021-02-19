@@ -1,13 +1,9 @@
 import React, { useContext, useEffect, useRef } from "react";
-import Keyboard from "../domain/Keyboard";
+import KeyboardLayout from "../domain/KeyboardLayout";
 import GuessLetterButton from "./GuessLetterButton";
 import GameContext from "../domain/GameContext";
 
-interface propTypes {
-  id: number;
-}
-
-const ScreenKeyboard = ({ id }: propTypes) => {
+const ScreenKeyboard = () => {
   const gameContext = useContext(GameContext);
   const divRef = useRef<HTMLDivElement>(null);
   const shouldDisableButton = (letter: string): boolean => {
@@ -18,7 +14,7 @@ const ScreenKeyboard = ({ id }: propTypes) => {
     );
   };
   const buttonListenerFunc = async (e: KeyboardEvent) => {
-    for (const letter of Keyboard.layout.flat()) {
+    for (const letter of KeyboardLayout.layout.flat()) {
       if (e.key === letter) {
         await Array.from(divRef.current!.getElementsByTagName("button"))
           .filter((button) => button.dataset.data === letter)[0]
@@ -34,7 +30,7 @@ const ScreenKeyboard = ({ id }: propTypes) => {
   }, []);
   return (
     <div className={"game__keyboard"} ref={divRef}>
-      {Keyboard.layout.map((row, i) => (
+      {KeyboardLayout.layout.map((row, i) => (
         <div key={"keyboard" + i} className={"game__keyboard-row"}>
           {row.map((letter) => (
             <GuessLetterButton

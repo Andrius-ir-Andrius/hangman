@@ -70,23 +70,51 @@ a {
 }
 
 .game__keyboard__button {
-  margin: 1px !important;
-  height: $smallScreen !important;
-  width: $smallScreen !important;
-  min-width: $smallScreen !important;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 1px 1px #156a35;
+  margin: 1px;
+  height: $smallScreen;
+  width: $smallScreen;
+  min-width: $smallScreen;
   @media all and (min-width: 390px) {
-    height: $mediumScreen !important;
-    width: $mediumScreen !important;
-    min-width: $mediumScreen !important;
+    margin: 2px;
+    box-shadow: 2px 2px #156a35;
+    height: $mediumScreen;
+    width: $mediumScreen;
+    min-width: $mediumScreen;
   }
   @media all and (min-width: 600px) {
-    height: $bigScreen !important;
-    width: $bigScreen !important;
-    min-width: $bigScreen !important;
+    height: $bigScreen;
+    width: $bigScreen;
+    min-width: $bigScreen;
   }
-  padding: 0 !important;
-  background-color: #45a265 !important;
-  &--disabled{
+  padding: 0;
+  background-color: #45a265;
+
+  &:hover,&:focus{
+    background-color: #45b265;
+    cursor: pointer;
+    outline: none;
+  }
+
+  &:active{
+    position: relative;
+    box-shadow: none;
+    left: 1px;
+    top: 1px;
+    @media all and (min-width: 390px) {
+      left: 2px;
+      top: 2px;
+    }
+  }
+
+  &--disabled {
     background-color: #257245 !important;
+    &:hover,&:focus{
+      background-color: #257245 !important;
+      cursor: default;
+      outline: none;
+    }
   }
 }

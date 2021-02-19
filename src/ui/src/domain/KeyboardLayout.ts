@@ -1,4 +1,4 @@
-export default class Keyboard {
+export default class KeyboardLayout {
   public static readonly layout: string[][] = [
     "qwertyuiop".split(""),
     "asdfghjkl".split(""),

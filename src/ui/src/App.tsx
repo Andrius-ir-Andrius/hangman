@@ -77,7 +77,7 @@ function App() {
           <>
             <GameDrawWindow />
             {state.error ?? ""}
-            <ScreenKeyboard id={state.game.getId()} />
+            <ScreenKeyboard />
             {state.game.hasFinished() ? <a href={"/"}>Create game</a> : ""}
           </>
         )}
