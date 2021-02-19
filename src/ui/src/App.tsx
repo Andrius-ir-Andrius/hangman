@@ -76,7 +76,7 @@ function App() {
         ) : (
           <>
             <GameDrawWindow />
-            {state.error ?? ""}
+            <div className={"game__error"}>{state.error ?? ""}</div>
             <ScreenKeyboard />
             {state.game.hasFinished() ? <a href={"/"}>Create game</a> : ""}
           </>
