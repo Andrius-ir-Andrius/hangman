@@ -70,9 +70,9 @@ function App() {
     >
       <div className={"game"}>
         {!state.isLoaded ? (
-          "Loading"
+          <div className={"game__error"}>Loading</div>
         ) : state.game === null ? (
-          <>{state.error}</>
+          <div className={"game__error"}>{state.error}</div>
         ) : (
           <>
             <GameDrawWindow />
