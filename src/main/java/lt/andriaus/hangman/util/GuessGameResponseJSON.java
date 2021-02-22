@@ -8,10 +8,10 @@ import java.util.Set;
 /**
  * encapsulates Game and is used for turning into json
  */
-public class JSONGame {
+public class GuessGameResponseJSON {
     private final Game game;
 
-    public JSONGame(Game game) {
+    public GuessGameResponseJSON(Game game) {
         this.game = game;
     }
 

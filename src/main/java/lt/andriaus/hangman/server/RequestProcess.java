@@ -2,15 +2,15 @@ package lt.andriaus.hangman.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lt.andriaus.hangman.util.RequestBody;
+import lt.andriaus.hangman.util.ExceptionResponseJSON;
+import lt.andriaus.hangman.util.GuessGameRequestBody;
 import spark.Request;
 import spark.Response;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class RequestProcess
-{
+public class RequestProcess {
     public static <T> String process(
             Request req,
             Response res,
@@ -22,26 +22,38 @@ public class RequestProcess
             else
                 return resultNotFound(req, res);
         } catch (Exception e) {
-            res.status(500);
-            return e.getMessage();
+            return InternalServerError(res, e.getMessage());
         }
+    }
+
+    public static String InternalServerError(Response res, String message) {
+        res.status(500);
+        return convertToJson(new ExceptionResponseJSON(message));
     }
 
     public static String resultNotFound(Request req, Response res) {
         res.status(404);
-        return "Result not found for request: id=" + getIdFromQueryAndBody(req);
+        return convertToJson(
+                new ExceptionResponseJSON("Result not found for request: id=" + getIdFromQueryAndBody(req))
+        );
+    }
+
+    private static String getIdFromBody(Request req) {
+        try {
+            return new ObjectMapper().readValue(req.body(), GuessGameRequestBody.class).getId() + "";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "";
+        }
     }
 
     public static String getIdFromQueryAndBody(Request req) {
         String idFromQuery = req.queryParams("id");
         if (null != idFromQuery)
             return req.queryParams("id");
-        try {
-            return new ObjectMapper().readValue(req.body(), RequestBody.class).getId() + "";
-        } catch (Exception e) {
-            return "";
-        }
+        return getIdFromBody(req);
     }
+
 
     private static <T> String convertToJson(T result) {
         try {

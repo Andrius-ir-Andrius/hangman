@@ -5,7 +5,7 @@ import lt.andriaus.hangman.gateway.api.Database;
 import lt.andriaus.hangman.gateway.implementation.inmemory.InMemoryDatabase;
 import lt.andriaus.hangman.usecase.GameManager;
 import lt.andriaus.hangman.usecase.WithDatabaseGameManager;
-import lt.andriaus.hangman.util.JSONGame;
+import lt.andriaus.hangman.util.GuessGameResponseJSON;
 
 import static lt.andriaus.hangman.server.RequestProcess.process;
 import static spark.Spark.*;
@@ -46,13 +46,12 @@ public class Server {
         }));
 
         get(GAME_URL, (req, res) -> process(req, res, () ->
-                action.loadGame(req).map(JSONGame::new)
+                action.loadGame(req).map(GuessGameResponseJSON::new)
         ));
 
-        put(GAME_URL, (req, res) -> process(req, res, () -> {
-            res.status(201);
-            return action.guessLetter(req).map(JSONGame::new);
-        }));
+        put(GAME_URL, (req, res) -> process(req, res, () ->
+                action.guessLetter(req).map(GuessGameResponseJSON::new)
+        ));
     }
 
     private static void initialiseConfig() {

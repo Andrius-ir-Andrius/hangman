@@ -8,7 +8,7 @@ import spark.Request;
 import java.util.Map;
 
 import static lt.andriaus.hangman.server.RequestProcess.getIdFromQueryAndBody;
-import static lt.andriaus.hangman.util.RequestBody.toJson;
+import static lt.andriaus.hangman.util.GuessGameRequestBody.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RequestProcessTest {

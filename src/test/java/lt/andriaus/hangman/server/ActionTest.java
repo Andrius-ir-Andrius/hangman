@@ -16,7 +16,7 @@ import spark.Request;
 import java.util.Map;
 import java.util.Optional;
 
-import static lt.andriaus.hangman.util.RequestBody.toJson;
+import static lt.andriaus.hangman.util.GuessGameRequestBody.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -49,7 +49,7 @@ class ActionTest {
         when(gameManager.createGame()).thenReturn(Optional.of(0));
         when(gameManager.loadGame(0)).thenReturn(optionalGame);
         Optional<Integer> id = action.createGame();
-        Request request = new RequestStub(Map.of("id", id.orElse(-1) + ""));
+        Request request = new RequestStub(Map.of("id", id.get() + ""));
         Optional<Game> game = action.loadGame(request);
         assertThat(game).isPresent();
 
@@ -76,7 +76,7 @@ class ActionTest {
         when(gameManager.guessLetter(0, 'a')).thenReturn(optionalGame);
         Optional<Integer> id = action.createGame();
         Request request = new RequestStub(
-                toJson(Map.of("id", id.orElse(-1), "letter", 'a'))
+                toJson(Map.of("id", id.get(), "letter", 'a'))
         );
         Optional<Game> game = action.guessLetter(request);
         assertThat(game).isPresent();

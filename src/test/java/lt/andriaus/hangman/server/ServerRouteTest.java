@@ -5,7 +5,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import lt.andriaus.hangman.util.RequestBody;
+import lt.andriaus.hangman.util.GuessGameRequestBody;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -69,7 +69,7 @@ public class ServerRouteTest {
         int id = parseInt(Unirest.post(URL)
                 .asString().getBody());
         HttpResponse<JsonNode> response = Unirest.put(URL)
-                .body(RequestBody.toJson(Map.of("id", id, "letter", 'a')))
+                .body(GuessGameRequestBody.toJson(Map.of("id", id, "letter", 'a')))
                 .asJson();
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(response.getBody()).matches(e -> e.toString().contains("\"guessedLetters\":[\"A\"]"));
@@ -81,7 +81,7 @@ public class ServerRouteTest {
         int id = parseInt(Unirest.post(URL)
                 .asString().getBody());
         HttpResponse<String> response = Unirest.put(URL)
-                .body(RequestBody.toJson(Map.of("id", id, "letter", '5')))
+                .body(GuessGameRequestBody.toJson(Map.of("id", id, "letter", '5')))
                 .asString();
         assertThat(response.getStatus()).isEqualTo(500);
     }
@@ -89,7 +89,7 @@ public class ServerRouteTest {
     @Test
     void shouldNotGuessInNonExistingGame() throws UnirestException, JsonProcessingException {
         HttpResponse<String> response = Unirest.put(URL)
-                .body(RequestBody.toJson(Map.of("id", -1, "letter", 'a')))
+                .body(GuessGameRequestBody.toJson(Map.of("id", -1, "letter", 'a')))
                 .asString();
         assertThat(response.getStatus()).isEqualTo(404);
     }

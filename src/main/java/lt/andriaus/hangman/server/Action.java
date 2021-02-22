@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lt.andriaus.hangman.domain.Game;
 import lt.andriaus.hangman.usecase.GameManager;
-import lt.andriaus.hangman.util.RequestBody;
+import lt.andriaus.hangman.util.GuessGameRequestBody;
 import spark.Request;
 
 import java.util.Optional;
@@ -30,9 +30,9 @@ public class Action {
     }
 
     public Optional<Game> guessLetter(Request request) {
-        RequestBody body;
+        GuessGameRequestBody body;
         try {
-            body = objectMapper.readValue(request.body(), RequestBody.class);
+            body = objectMapper.readValue(request.body(), GuessGameRequestBody.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Wrong request body");
         }

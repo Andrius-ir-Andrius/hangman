@@ -6,11 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-public class RequestBody {
+public class GuessGameRequestBody {
     private final int id;
     private final char letter;
 
-    public RequestBody(@JsonProperty("id") int id, @JsonProperty("letter") char letter) {
+    public GuessGameRequestBody(@JsonProperty("id") int id, @JsonProperty("letter") char letter) {
         this.id = id;
         this.letter = letter;
     }
