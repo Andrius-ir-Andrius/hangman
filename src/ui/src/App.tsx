@@ -13,18 +13,9 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      let isMounted = true; // note this flag denote mount status
       const id = getIdFromQuery();
-      if (id === null) {
-        const newGame = await loadNewGameAndUpdateQuery(state);
-        if (isMounted) setState(newGame);
-      } else {
-        const loadedGame = await loadGameFromId(id!, state);
-        if (isMounted) setState(loadedGame);
-      }
-      return () => {
-        isMounted = false;
-      };
+      if (id === null) setState(await loadNewGameAndUpdateQuery(state));
+      else setState(await loadGameFromId(id, state));
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
