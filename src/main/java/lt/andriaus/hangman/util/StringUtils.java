@@ -4,17 +4,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Utils {
+public class StringUtils {
 
-    static public Set<Character> stringToCharSet(String inputString) {
+    public static Set<Character> stringToCharSet(String inputString) {
         return inputString.chars()
                 .mapToObj(e -> (char) e)
                 .collect(Collectors.toSet());
     }
 
-    static public List<Character> stringToCharList(String inputString) {
+    public static List<Character> stringToCharList(String inputString) {
         return inputString.chars()
                 .mapToObj(e -> (char) e)
                 .collect(Collectors.toList());
+    }
+
+    public static String charSetToString(Set<Character> inputSet) {
+        return inputSet.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining());
     }
 }

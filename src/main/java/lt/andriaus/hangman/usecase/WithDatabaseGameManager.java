@@ -14,11 +14,13 @@ public class WithDatabaseGameManager implements GameManager {
         this.gameDB = gameDB;
     }
 
-    public int createGame() {
-        return wordDB.loadRandom()
+    public Optional<Integer> createGame() {
+        return Optional.of(
+                wordDB.loadRandom()
                 .map(word -> Game.Builder.fromWord(word).build())
                 .map(gameDB::save)
-                .orElseThrow(GameManagerException::failedToCreateGameException);
+                .orElseThrow(GameManagerException::failedToCreateGameException)
+        );
     }
 
     public Optional<Game> loadGame(int id) {

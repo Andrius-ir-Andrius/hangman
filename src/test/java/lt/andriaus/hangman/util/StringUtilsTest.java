@@ -2,23 +2,29 @@ package lt.andriaus.hangman.util;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
+@TestInstance(PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 class StringUtilsTest {
-    private static String wordString;
+    private String wordString;
 
     @BeforeAll
-    static void setup() {
+    void setup() {
         wordString = "hello";
     }
 
     @Test
     void shouldReturnSet() {
-        Set<Character> wordSet = Utils.stringToCharSet(wordString);
+        Set<Character> wordSet = StringUtils.stringToCharSet(wordString);
 
         assertThat(wordSet.contains('h')).isTrue();
         assertThat(wordSet.size()).isEqualTo(wordString.length() - 1);
@@ -26,10 +32,21 @@ class StringUtilsTest {
 
     @Test
     void shouldReturnCharList() {
-        List<Character> wordList = Utils.stringToCharList(wordString);
+        List<Character> wordList = StringUtils.stringToCharList(wordString);
 
         assertThat(wordList.get(0)).isEqualTo(wordString.charAt(0));
         assertThat(wordList.get(1)).isEqualTo(wordString.charAt(1));
         assertThat(wordList).hasSize(wordString.length());
     }
+
+    @Test
+    void shouldReturnString() {
+        Set<Character> inputSet = Set.of('a', 'b', 'c');
+        String receivedString = StringUtils.charSetToString(inputSet);
+        assertThat(receivedString).contains("a");
+        assertThat(receivedString).contains("b");
+        assertThat(receivedString).contains("c");
+        assertThat(receivedString.length()).isEqualTo(3);
+    }
+
 }
