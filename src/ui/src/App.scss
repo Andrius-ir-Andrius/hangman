@@ -113,7 +113,8 @@ a {
     outline: none;
   }
 
-  &:active {
+  &:active, &--pressed {
+    background-color: $colorDefaultGreen;
     position: relative;
     box-shadow: none;
     left: 1px;
@@ -126,7 +127,9 @@ a {
 
   &--disabled {
     background-color: $colorDisabledGreen !important;
-
+    left: 0 !important;
+    top: 0 !important;
+    box-shadow: 1px 1px $colorShadowGreen;
     &:hover, &:focus {
       background-color: $colorDisabledGreen !important;
       cursor: default;

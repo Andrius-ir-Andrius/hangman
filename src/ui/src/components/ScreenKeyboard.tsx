@@ -13,19 +13,42 @@ const ScreenKeyboard = () => {
       game.hasFinished()
     );
   };
-  const buttonListenerFunc = async (e: KeyboardEvent) => {
+  const keyUpListener = async (e: KeyboardEvent) => {
     for (const letter of KeyboardLayout.layout.flat()) {
       if (e.key === letter) {
-        await Array.from(divRef.current!.getElementsByTagName("button"))
-          .filter((button) => button.dataset.data === letter)[0]
-          .click();
+        const button = Array.from(
+          divRef.current!.getElementsByTagName("button")
+        ).filter((button) => button.dataset.data === letter)[0];
+        await button.click();
+        button.setAttribute(
+          "class",
+          Array.from(button.classList)
+            .join(" ")
+            .replace(/game__keyboard__button--pressed/g, "")
+        );
+      }
+    }
+  };
+  const keyDownListener = async (e: KeyboardEvent) => {
+    for (const letter of KeyboardLayout.layout.flat()) {
+      if (e.key === letter) {
+        const button = Array.from(
+          divRef.current!.getElementsByTagName("button")
+        ).filter((button) => button.dataset.data === letter)[0];
+        button.setAttribute(
+          "class",
+          Array.from(button.classList).join(" ") +
+            " game__keyboard__button--pressed"
+        );
       }
     }
   };
   useEffect(() => {
-    window.addEventListener("keypress", buttonListenerFunc);
+    window.addEventListener("keyup", keyUpListener);
+    window.addEventListener("keydown", keyDownListener);
     return () => {
-      window.removeEventListener("keypress", buttonListenerFunc);
+      window.removeEventListener("keyup", keyUpListener);
+      window.removeEventListener("keydown", keyDownListener);
     };
   }, []);
   return (

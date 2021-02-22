@@ -106,12 +106,22 @@ describe("test button disable after guess", () => {
       "game__keyboard__button game__keyboard__button--disabled"
     );
   });
-  test("should disable Button after keyboard press", async () => {
+  test("should have Button css change on down", () => {
     const { element } = setup();
     const buttonR = Array.from(
       element.container.getElementsByTagName("button")
     ).filter((e) => e.dataset.data?.toLowerCase() === "r")[0];
     window.dispatchEvent(new KeyboardEvent("keydown", { key: "r" }));
+    expect(
+      buttonR.classList.contains("game__keyboard__button--pressed")
+    ).toBeTruthy();
+  });
+  test("should disable Button after keyboard press", async () => {
+    const { element } = setup();
+    const buttonR = Array.from(
+      element.container.getElementsByTagName("button")
+    ).filter((e) => e.dataset.data?.toLowerCase() === "w")[0];
+    window.dispatchEvent(new KeyboardEvent("keyup", { key: "w" }));
     expect(buttonR).toHaveAttribute(
       "class",
       "game__keyboard__button game__keyboard__button--disabled"
