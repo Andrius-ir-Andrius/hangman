@@ -6,16 +6,25 @@ import "./App.scss";
 import AppStateType, { defaultAppState } from "./domain/AppStateType";
 import loadNewGameAndUpdateQuery from "./usecase/loadNewGameAndUpdateQuery";
 import loadGameFromId from "./usecase/loadGameFromId";
+import { getIdFromQuery } from "./util";
 
 function App() {
   const [state, setState] = useState<AppStateType>(defaultAppState);
 
   useEffect(() => {
     (async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const id = urlParams.get("id");
-      if (id === null) setState(await loadNewGameAndUpdateQuery(state));
-      else setState(await loadGameFromId(id, state));
+      let isMounted = true; // note this flag denote mount status
+      const id = getIdFromQuery();
+      if (id === null) {
+        const newGame = await loadNewGameAndUpdateQuery(state);
+        if (isMounted) setState(newGame);
+      } else {
+        const loadedGame = await loadGameFromId(id!, state);
+        if (isMounted) setState(loadedGame);
+      }
+      return () => {
+        isMounted = false;
+      };
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
