@@ -4,14 +4,10 @@ import lt.andriaus.hangman.domain.Game;
 
 import java.util.Set;
 
-
-/**
- * encapsulates Game and is used for turning into json
- */
-public class GuessGameResponseJSON {
+public class GuessGameResponse {
     private final Game game;
 
-    public GuessGameResponseJSON(Game game) {
+    public GuessGameResponse(Game game) {
         this.game = game;
     }
 

@@ -1,9 +1,9 @@
 package lt.andriaus.hangman.util;
 
-public class ExceptionResponseJSON {
+public class ExceptionResponse {
     private final String message;
 
-    public ExceptionResponseJSON(String message) {
+    public ExceptionResponse(String message) {
         this.message = message;
     }
 

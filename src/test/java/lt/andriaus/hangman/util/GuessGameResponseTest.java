@@ -13,8 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GuessGameResponseJSONTest {
-    GuessGameResponseJSON guessGameResponseJSON;
+class GuessGameResponseTest {
+    GuessGameResponse guessGameResponse;
     @Mock
     Game game;
 
@@ -26,22 +26,22 @@ class GuessGameResponseJSONTest {
     @Test
     void shouldBeBLank() {
         when(game.getGuessedLetters()).thenReturn(Set.of());
-        guessGameResponseJSON = new GuessGameResponseJSON(game);
-        assertThat(guessGameResponseJSON.getWord()).isEqualTo("_____");
+        guessGameResponse = new GuessGameResponse(game);
+        assertThat(guessGameResponse.getWord()).isEqualTo("_____");
     }
 
     @Test
     void shouldOpenSingle() {
         when(game.getGuessedLetters()).thenReturn(Set.of('S'));
-        guessGameResponseJSON = new GuessGameResponseJSON(game);
-        assertThat(guessGameResponseJSON.getWord()).isEqualTo("____S");
+        guessGameResponse = new GuessGameResponse(game);
+        assertThat(guessGameResponse.getWord()).isEqualTo("____S");
     }
 
     @Test
     void shouldOpenAll() {
         when(game.getGuessedLetters()).thenReturn(Set.of('M', 'A', 'S'));
-        guessGameResponseJSON = new GuessGameResponseJSON(game);
-        assertThat(guessGameResponseJSON.getWord()).isEqualTo("MAMAS");
+        guessGameResponse = new GuessGameResponse(game);
+        assertThat(guessGameResponse.getWord()).isEqualTo("MAMAS");
     }
 
 }

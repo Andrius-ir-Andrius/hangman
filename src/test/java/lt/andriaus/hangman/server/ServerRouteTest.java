@@ -1,11 +1,13 @@
 package lt.andriaus.hangman.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import lt.andriaus.hangman.util.GuessGameRequestBody;
+import lt.andriaus.hangman.util.GuessGameResponseBody;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -23,6 +25,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 public class ServerRouteTest {
 
     private final String URL = "http://localhost:4567/game";
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeAll
     void setup() {
@@ -46,14 +49,17 @@ public class ServerRouteTest {
     }
 
     @Test
-    void shouldLoadGameAfterCreate() throws UnirestException {
+    void shouldLoadGameAfterCreate() throws UnirestException, JsonProcessingException {
         int id = parseInt(Unirest.post(URL)
                 .asString().getBody());
         HttpResponse<JsonNode> response = Unirest.get(URL)
                 .queryString("id", id)
                 .asJson();
+        GuessGameResponseBody responseBody = mapper.readValue(
+                response.getBody().toString(), GuessGameResponseBody.class
+        );
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getBody()).matches(e -> e.toString().contains("\"guessedLetters\":[]"));
+        assertThat(responseBody.getGuessedLetters().isEmpty()).isTrue();
     }
 
     @Test
@@ -71,8 +77,12 @@ public class ServerRouteTest {
         HttpResponse<JsonNode> response = Unirest.put(URL)
                 .body(GuessGameRequestBody.toJson(Map.of("id", id, "letter", 'a')))
                 .asJson();
+        GuessGameResponseBody responseBody = mapper.readValue(
+                response.getBody().toString(), GuessGameResponseBody.class
+        );
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getBody()).matches(e -> e.toString().contains("\"guessedLetters\":[\"A\"]"));
+        assertThat(responseBody.getGuessedLetters().size()).isEqualTo(1);
+        assertThat(responseBody.getGuessedLetters().contains("A")).isTrue();
 
     }
 

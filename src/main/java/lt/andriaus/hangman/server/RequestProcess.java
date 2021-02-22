@@ -2,7 +2,7 @@ package lt.andriaus.hangman.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lt.andriaus.hangman.util.ExceptionResponseJSON;
+import lt.andriaus.hangman.util.ExceptionResponse;
 import lt.andriaus.hangman.util.GuessGameRequestBody;
 import spark.Request;
 import spark.Response;
@@ -28,13 +28,13 @@ public class RequestProcess {
 
     public static String InternalServerError(Response res, String message) {
         res.status(500);
-        return convertToJson(new ExceptionResponseJSON(message));
+        return convertToJson(new ExceptionResponse(message));
     }
 
     public static String resultNotFound(Request req, Response res) {
         res.status(404);
         return convertToJson(
-                new ExceptionResponseJSON("Result not found for request: id=" + getIdFromQueryAndBody(req))
+                new ExceptionResponse("Result not found for request: id=" + getIdFromQueryAndBody(req))
         );
     }
 
